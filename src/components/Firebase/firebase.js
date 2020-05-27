@@ -39,6 +39,8 @@ class Firebase {
   user = uid => this.db.ref(`users/${uid}`);
  
   users = () => this.db.ref('users');
+
+  doUpdateProfile = (name) => this.auth.currentUser.updateProfile({ displayName: name });
 }
  
 export default Firebase;

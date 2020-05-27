@@ -6,7 +6,7 @@ import * as ROUTES from '../../constants/routes';
 import { AuthUserContext } from '../Session';
  
 const Navigation = () => (
-  <div>
+  <div className="nav">
     <AuthUserContext.Consumer>
       {authUser =>
         authUser ? <NavigationAuth /> : <NavigationNonAuth />
@@ -16,18 +16,18 @@ const Navigation = () => (
 );
  
 const NavigationAuth = () => (
-  <ul>
+  <ul className="links">
     <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
+      <Link style={linkStyle} to={ROUTES.LANDING}>Landing</Link>
     </li>
     <li>
-      <Link to={ROUTES.HOME}>Home</Link>
+      <Link style={linkStyle} to={ROUTES.HOME}>Home</Link>
     </li>
     <li>
-      <Link to={ROUTES.ACCOUNT}>Account</Link>
+      <Link style={linkStyle} to={ROUTES.ACCOUNT}>Account</Link>
     </li>
     <li>
-      <Link to={ROUTES.ADMIN}>Admin</Link>
+      <Link style={linkStyle} to={ROUTES.ADMIN}>Admin</Link>
     </li>
     <li>
       <SignOutButton />
@@ -36,14 +36,19 @@ const NavigationAuth = () => (
 );
  
 const NavigationNonAuth = () => (
-  <ul>
+  <ul className="links">
     <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
+      <Link style={linkStyle} to={ROUTES.LANDING}>Landing</Link>
     </li>
     <li>
-      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+      <Link style={linkStyle} to={ROUTES.SIGN_IN}>Sign In</Link>
     </li>
   </ul>
 );
+
+const linkStyle = {
+  color: 'white',
+  textDecoration: 'none'
+}
  
 export default Navigation;

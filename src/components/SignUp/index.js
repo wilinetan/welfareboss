@@ -28,13 +28,15 @@ class SignUpFormBase extends Component {
   }
  
   onSubmit = event => {
-    // eslint-disable-next-line
     const { username, email, passwordOne } = this.state;
  
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
-        // Create a user in your Firebase realtime database
+        // update user profile
+        this.props.firebase.doUpdateProfile(username);
+
+        // Create a user in the Firebase realtime database
         return this.props.firebase
           .user(authUser.user.uid)
           .set({
