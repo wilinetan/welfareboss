@@ -7,7 +7,7 @@ import * as ROUTES from '../../constants/routes';
  
 const SignUpPage = () => (
   <div>
-    <h1>SignUp</h1>
+    <h1>Sign Up</h1>
     <SignUpForm />
   </div>
 );
@@ -17,6 +17,7 @@ const INITIAL_STATE = {
   email: '',
   passwordOne: '',
   passwordTwo: '',
+  file: null,
   error: null,
 };
  
@@ -28,7 +29,7 @@ class SignUpFormBase extends Component {
   }
  
   onSubmit = event => {
-    const { username, email, passwordOne } = this.state;
+    const { username, email, passwordOne, file } = this.state;
  
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
@@ -58,6 +59,10 @@ class SignUpFormBase extends Component {
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  onFileChange = event => {
+    this.setState({ file: event.target.files[0] })
+  }
  
   render() {
     const {
@@ -65,6 +70,7 @@ class SignUpFormBase extends Component {
       email,
       passwordOne,
       passwordTwo,
+      file,
       error,
     } = this.state;
 
@@ -103,6 +109,10 @@ class SignUpFormBase extends Component {
           onChange={this.onChange}
           type="password"
           placeholder="Confirm Password"
+        />
+        <input 
+          type="file"
+          onChange={this.onFileChange}
         />
         <button disabled={isInvalid} type="submit">
           Sign Up
