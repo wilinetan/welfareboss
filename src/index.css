@@ -15,10 +15,11 @@ code {
 .nav {
   background: #333;
   padding: 10px;
+  display: block;
 }
 
 .links {
-  display: block;
+  /* display: block; */
   padding: 10px;
   text-align: right;
 }
