@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
  
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
  
 const SignUpPage = () => (
-  <div>
+  <div style={{ paddingLeft: '80px', paddingRight: '80px' }}>
     <h1>Sign Up</h1>
     <SignUpForm />
   </div>
@@ -34,18 +36,27 @@ class SignUpFormBase extends Component {
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
-        // update user profile
+        // Update user profile
         this.props.firebase.doUpdateProfile(username);
 
-        // Create a user in the Firebase realtime database
-        return this.props.firebase
-          .user(authUser.user.uid)
-          .set({
-            username,
-            email,
+        // Upload file to Firebase storage
+        var uploadFile = this.props.firebase.userStorage(authUser.user.uid).child(file.name).put(file);
+        
+        // Create user in the Firebase realtime database
+        uploadFile.then(snapshot => {
+          snapshot.ref.getDownloadURL().then(url => {
+            this.props.firebase
+              .user(authUser.user.uid)
+              .set({
+                username,
+                email,
+                file: url
+              });
           });
+        });
       })
       .then(authUser => {
+        // Reset state to intial state and redirect user to Home page
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
       })
@@ -70,59 +81,88 @@ class SignUpFormBase extends Component {
       email,
       passwordOne,
       passwordTwo,
-      file,
       error,
     } = this.state;
 
-    const isInvalid =
-      passwordOne !== passwordTwo ||
-      passwordOne === '' ||
-      email === '' ||
-      username === '';
+    // const isInvalid =
+    //   passwordOne !== passwordTwo ||
+    //   passwordOne === '' ||
+    //   email === '' ||
+    //   username === '';
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="username"
-          value={username}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Full Name"
-        />
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          name="passwordOne"
-          value={passwordOne}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />
-        <input
-          name="passwordTwo"
-          value={passwordTwo}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Confirm Password"
-        />
-        <input 
-          type="file"
-          onChange={this.onFileChange}
-        />
-        <button disabled={isInvalid} type="submit">
+      <Form onSubmit={this.onSubmit}>
+        <Form.Group controlId="formBasicName">
+          <Form.Label>Full Name</Form.Label>
+          <Form.Control 
+            name="username"
+            value={username}
+            type="text" 
+            placeholder="Enter full name"
+            onChange={this.onChange} 
+            required
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control 
+            required
+            name="email"
+            value={email}
+            type="email" 
+            placeholder="Enter email"
+            onChange={this.onChange} 
+          />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control 
+            required
+            name="passwordOne"
+            value={passwordOne}
+            type="password" 
+            placeholder="Password"
+            onChange={this.onChange} 
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formConfirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control 
+            required
+            name="passwordTwo"
+            value={passwordTwo}
+            type="password" 
+            placeholder="Password"
+            onChange={this.onChange} 
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formFileUpload">
+          <Form.Label>Upload Excel File</Form.Label>
+          <Form.Control 
+            required
+            type="file"
+            placeholder="Upload file"
+            onChange={this.onFileChange}
+          />
+        </Form.Group>
+        
+        <Button variant="primary" type="submit">
           Sign Up
-        </button>
- 
+        </Button>
+
         {error && <p>{error.message}</p>}
-      </form>
+      </Form>
     );
   }
 }
+//disabled={isInvalid}
  
 const SignUpLink = () => (
   <p>
