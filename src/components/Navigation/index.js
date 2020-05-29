@@ -14,7 +14,7 @@ const Navigation = () => (
     </AuthUserContext.Consumer>
   </div>
 );
- 
+
 const NavigationAuth = () => (
   <ul className="links">
     <li>
@@ -34,7 +34,8 @@ const NavigationAuth = () => (
     </li>
   </ul>
 );
- 
+
+
 const NavigationNonAuth = () => (
   <ul className="links">
     <li>
@@ -47,8 +48,9 @@ const NavigationNonAuth = () => (
 );
 
 const linkStyle = {
-  color: 'white',
-  textDecoration: 'none'
+  fontFamily:'Bookman',
+  color: 'black',
+  textDecoration: 'underline'
 }
  
 export default Navigation;
