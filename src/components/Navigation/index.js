@@ -19,7 +19,7 @@ const Navigation = () => (
 const NavigationAuth = () => (
   <ul className="links">
     <li>
-      <Link style={linkStyle} to={ROUTES.LANDING}>Landing</Link>
+      <Link style={linkStyle} to={ROUTES.LANDING}>Main</Link>
     </li>
     <li>
       <Link style={linkStyle} to={ROUTES.HOME}>Home</Link>
@@ -40,7 +40,7 @@ const NavigationAuth = () => (
 const NavigationNonAuth = () => (
   <ul className="links">
     <li>
-      <Link style={linkStyle} to={ROUTES.LANDING}>Landing</Link>
+      <Link style={linkStyle} to={ROUTES.LANDING}>Main</Link>
     </li>
     <li>
       <Link style={linkStyle} to={ROUTES.SIGN_IN}>Sign In</Link>
@@ -50,8 +50,7 @@ const NavigationNonAuth = () => (
 
 const linkStyle = {
   fontFamily:'Bookman',
-  color: 'black',
-  textDecoration: 'underline'
+  color: 'black'
 }
  
 export default Navigation;
