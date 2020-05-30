@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
  
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
@@ -21,4 +22,4 @@ class SignOutButton extends Component {
   }
 }
  
-export default withRouter(withFirebase(SignOutButton));
+export default compose(withRouter, withFirebase)(SignOutButton);
