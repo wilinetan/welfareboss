@@ -7,6 +7,7 @@ import { AuthUserContext } from '../Session';
  
 const Navigation = () => (
   <div className="nav">
+    <img src="https://lh3.googleusercontent.com/WAj_qKdZbj8R5iPHhL03ygIZkVAVo2n7Y6-hALAyIWhtof7vr6kdEGL3wi3tWQA2pdCq_-5zFdZ1NjvBjnEjdEodAYGz0TfmmbrUMMuaipRvd33oQm6bl_3zVyBjy4ghw0E_InZIsA=w2400" width='230px' height ='80px' style={{marginLeft:'8px', marginTop:'8px'}} ></img>
     <AuthUserContext.Consumer>
       {authUser =>
         authUser ? <NavigationAuth /> : <NavigationNonAuth />
@@ -18,7 +19,7 @@ const Navigation = () => (
 const NavigationAuth = () => (
   <ul className="links">
     <li>
-      <Link style={linkStyle} to={ROUTES.LANDING}>Landing</Link>
+      <Link style={linkStyle} to={ROUTES.LANDING}>Main</Link>
     </li>
     <li>
       <Link style={linkStyle} to={ROUTES.HOME}>Home</Link>
@@ -39,7 +40,7 @@ const NavigationAuth = () => (
 const NavigationNonAuth = () => (
   <ul className="links">
     <li>
-      <Link style={linkStyle} to={ROUTES.LANDING}>Landing</Link>
+      <Link style={linkStyle} to={ROUTES.LANDING}>Main</Link>
     </li>
     <li>
       <Link style={linkStyle} to={ROUTES.SIGN_IN}>Sign In</Link>
@@ -49,8 +50,8 @@ const NavigationNonAuth = () => (
 
 const linkStyle = {
   fontFamily:'Bookman',
-  color: 'black',
-  textDecoration: 'underline'
+  color: 'black'
 }
  
 export default Navigation;
+

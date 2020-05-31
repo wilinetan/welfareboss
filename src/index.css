@@ -16,20 +16,30 @@ code {
 
   background: rgba(212, 160, 160, 0.973);
   padding: 2px;
+  text-align: right;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  vertical-align:bottom
 }
 
 .links {
-  display: block;
+  display: inline-block;
   padding: 2px;
-
   text-align: right;
-  color: black
+  color: black;
+  vertical-align:bottom
 }
 
 .links li {
   display: inline-block;
   font-size: 16px;
   text-align: center;
-  padding: 10px;
-  color: black
+  padding: 2px;
+  color: black;
+  vertical-align:middle;
+  margin-top:28px;
+  margin-left:14px;
 }
+
+

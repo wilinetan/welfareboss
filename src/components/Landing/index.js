@@ -7,6 +7,10 @@ const Landing = () => (
     <br clear="all" />
     <br clear="all" />
     <Landing2/>
+    <br clear="all" />
+    <br clear="all" />
+    <br clear="all" />
+    <Landing3/>
   </div>
 )
 const Landing1 = () => (
@@ -29,10 +33,11 @@ const Landing1 = () => (
 
 const Landing2 = () => (
   <div>
-    <div style={{width:"500px", float:"left", height:"100px", margin:"5px"}}>
-        <img src = "https://esabook.files.wordpress.com/2018/08/telegram-bots-father.png" width='600px' height ='400px'></img>
+    <div style={{width:"500px", float:"left", height:"200px", margin:"5px", textAlign:'right'}}>
+        <img src = "https://robbeekmans.net/wp-content/uploads/2018/12/digital-nomad-millenial-woman-working-remotely-from-cafe_free_stock_photos_picjumbo_HNCK3157-2210x1474.jpg" width='450px' height ='250px'></img>
     </div>
-    <div style={{width: "700px", float:"right", height:"500px", margin:"15px"}}>
+
+    <div style={{width: "700px", float:"right", height:"200px", margin:"20px"}}>
       <h2 style={{color: 'black', margin:'0px', fontSize: '20px',fontFamily:'Bookman'}}>
         <p style={{textDecoration: 'underline'}}>Our Services </p>
         <ul>
@@ -42,6 +47,22 @@ const Landing2 = () => (
         <p>Say no more to impatient crowds and repeatedly asking for matric cards and proof of survey completion!</p>
       </h2>
     </div>
+  </div>
+  );
+
+const Landing3 = () => (
+  <div>
+      <div style={{width: "600px", float:"left", height:"250px", margin:"0px"}}>
+        <h2 style={{textAlign:'right', color: 'black', margin:'20px', fontSize: '20px',fontFamily:'Bookman'}}>
+          <p style={{ textDecoration: 'underline'}}>Contact Us on Telegram</p>
+          <p style={{fontStyle:'italic'}}>Lim Jia Yi: @jiayi_i </p>
+          <p style={{fontStyle:'italic'}}>Wiline Tan: @wiline </p>
+        </h2>
+      </div>
+  
+      <div style={{width:"400px", float:"left", height:"400px", margin:"0px"}}>
+        <img src = "https://lh3.googleusercontent.com/c9MIYFDcJCmHanj5v4w4q8ROtl8E2ebitOB3Xx-vuNqWkbS5ct7-8AdneiTB3zxFYlUuhfm872B7mVh2oZ2LsPtk1TH5OufedY3adOTEACVFwqdqA51I5Yb-v0FJt9e9QSAfPIIk9Q=w2400" width='380px' height ='240px'></img>
+      </div>
   </div>
   );
 
