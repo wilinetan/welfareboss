@@ -13,6 +13,7 @@ code {
 }
 
 .nav {
+
   background: rgba(212, 160, 160, 0.973);
   padding: 2px;
   text-align: right;
@@ -25,6 +26,7 @@ code {
 .links {
   display: inline-block;
   padding: 2px;
+
   text-align: right;
   color: black;
   vertical-align:bottom
