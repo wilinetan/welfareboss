@@ -61,7 +61,7 @@ const Landing3 = () => (
       </div>
   
       <div style={{width:"400px", float:"left", height:"400px", margin:"0px"}}>
-        <img src = "https://lh3.googleusercontent.com/c9MIYFDcJCmHanj5v4w4q8ROtl8E2ebitOB3Xx-vuNqWkbS5ct7-8AdneiTB3zxFYlUuhfm872B7mVh2oZ2LsPtk1TH5OufedY3adOTEACVFwqdqA51I5Yb-v0FJt9e9QSAfPIIk9Q=w2400" width='400px' height ='240px'></img>
+        <img src = "https://lh3.googleusercontent.com/c9MIYFDcJCmHanj5v4w4q8ROtl8E2ebitOB3Xx-vuNqWkbS5ct7-8AdneiTB3zxFYlUuhfm872B7mVh2oZ2LsPtk1TH5OufedY3adOTEACVFwqdqA51I5Yb-v0FJt9e9QSAfPIIk9Q=w2400" width='380px' height ='240px'></img>
       </div>
   </div>
   );

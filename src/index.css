@@ -26,7 +26,6 @@ code {
 .links {
   display: inline-block;
   padding: 2px;
-
   text-align: right;
   color: black;
   vertical-align:bottom
@@ -39,7 +38,7 @@ code {
   padding: 2px;
   color: black;
   vertical-align:middle;
-  margin-top:22px;
+  margin-top:28px;
   margin-left:14px;
 }
 
