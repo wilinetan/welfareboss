@@ -1,7 +1,7 @@
-import app from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/database';
-import 'firebase/storage';
+import app from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
+import "firebase/storage";
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -11,7 +11,7 @@ const config = {
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 };
- 
+
 class Firebase {
   constructor() {
     app.initializeApp(config);
@@ -22,33 +22,70 @@ class Firebase {
   }
 
   // *** Auth API ***
-
   doCreateUserWithEmailAndPassword = (email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password);
-  
+
+  doSendEmailVerification = () =>
+    this.auth.currentUser.sendEmailVerification({
+      url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+    });
+
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
   doSignOut = () => this.auth.signOut();
 
-  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
- 
-  doPasswordUpdate = password =>
+  doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
+
+  doPasswordUpdate = (password) =>
     this.auth.currentUser.updatePassword(password);
 
-  // *** User API ***
- 
-  user = uid => this.db.ref(`users/${uid}`);
- 
-  users = () => this.db.ref('users');
+  // *** Merge Auth and DB User API *** //
 
-  doUpdateProfile = (name) => this.auth.currentUser.updateProfile({ displayName: name });
+  onAuthUserListener = (next, fallback) =>
+    this.auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        this.user(authUser.uid)
+          .once("value")
+          .then((snapshot) => {
+            const dbUser = snapshot.val();
+
+            // default empty roles
+            if (!dbUser.roles) {
+              dbUser.roles = [];
+            }
+
+            // merge auth and db user
+            authUser = {
+              uid: authUser.uid,
+              email: authUser.email,
+              displayName: authUser.displayName,
+              emailVerified: authUser.emailVerified,
+              providerData: authUser.providerData,
+              ...dbUser,
+            };
+
+            next(authUser);
+          });
+      } else {
+        fallback();
+      }
+    });
+
+  // *** User Database API ***
+
+  user = (uid) => this.db.ref(`users/${uid}`);
+
+  users = () => this.db.ref("users");
+
+  doUpdateProfile = (name) =>
+    this.auth.currentUser.updateProfile({ displayName: name });
 
   // *** Storage API ***
-  
-  userStorage = uid => this.storage.ref(`users/${uid}`);
 
-  usersStorage = () => this.storage.ref('users');
+  userStorage = (uid) => this.storage.ref(`users/${uid}`);
+
+  usersStorage = () => this.storage.ref("users");
 }
- 
+
 export default Firebase;
