@@ -43,7 +43,7 @@ class AccountDetails extends Component {
       .user(this.props.authUser.uid)
       .once("value", (snapshot) => {
         var details = snapshot.val();
-        console.log("details", details);
+
         this.setState({
           loading: false,
           url: details.file,
