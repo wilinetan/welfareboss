@@ -6,11 +6,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
 const needsEmailVerification = (authUser) =>
-  authUser &&
-  !authUser.emailVerified &&
-  authUser.providerData
-    .map((provider) => provider.providerId)
-    .includes("password");
+  authUser && !authUser.emailVerified;
 
 const withEmailVerification = (Component) => {
   class WithEmailVerification extends React.Component {
