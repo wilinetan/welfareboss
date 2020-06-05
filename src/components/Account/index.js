@@ -33,7 +33,8 @@ class AccountDetails extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.props.firebase.user(this.props.authUser.uid).once("value", snapshot => {
+    this.props.firebase
+    .user(this.props.authUser.uid).once("value", snapshot => {
       var fileUrl = snapshot.val().file;
       this.setState({
         loading: false,

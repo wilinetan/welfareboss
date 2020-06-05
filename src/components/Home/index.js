@@ -56,19 +56,25 @@ export default withAuthorization(condition)(HomePage);
 
 import React, { Component } from 'react';
 import { compose } from 'recompose'; 
-import { withAuthorization } from '../Session';
+import { withAuthorization, AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
 
 const HomePage = () => (
-  <div>
-    <h1>Home Page</h1>
-    <p>The Home Page is accessible by every signed in user.</p>
-    <queuedet/>
-  </div>
+  <AuthUserContext.Consumer>
+    {authUser => 
+      <div>
+        <h1>Queue Details</h1>
+        <p>Current Serving Queue Number:</p>
+        <p>Last Issued Queue Number:</p>
+        <p>Number of people in Queue:</p>
+      </div>
+    }
+  </AuthUserContext.Consumer>
 );
 
+
 class queuedetbase extends Component {
-  construct(props){
+  constructor(props){
     super(props);
 
     this.state = {
@@ -80,7 +86,8 @@ class queuedetbase extends Component {
   componentDidMount(){
     this.setState({loading:true});
 
-    this.props.firebase.queuedet().on('value',snapshot => {
+    this.props.firebase.db.ref(14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/queueDetails).on('value',snapshot => {
+      var queuedet = snapshot.val().
       this.setState({loading:false});
     })
   }
