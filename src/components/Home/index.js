@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // import React from 'react';
 // import { withAuthorization } from '../Session';
 // import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer } from "mdbreact";
@@ -51,24 +51,20 @@
 //   };
 
  
-const condition = authUser => !!authUser;
- 
-export default withAuthorization(condition)(HomePage);
 
-import React, { Component } from 'react';
-import { compose } from 'recompose'; 
-import { withAuthorization, AuthUserContext } from '../Session';
-import { withFirebase } from '../Firebase';
-=======
-import React from "react";
+import React, { Component } from "react";
 import { compose } from "recompose";
 
-import { withAuthorization, withEmailVerification } from "../Session";
->>>>>>> 667de024f909d45326cdb647bd879594003381d6
+import {
+  AuthUserContext,
+  withAuthorization,
+  withEmailVerification,
+} from "../Session";
+import { withFirebase } from "../Firebase";
 
 const HomePage = () => (
   <AuthUserContext.Consumer>
-    {authUser => 
+    {(authUser) => 
       <div>
         <h1>Queue Details</h1>
         <p>Current Serving Queue Number:</p>
@@ -79,61 +75,56 @@ const HomePage = () => (
   </AuthUserContext.Consumer>
 );
 
-<<<<<<< HEAD
 
-class queuedetbase extends Component {
+class QueueDetails extends Component {
   constructor(props){
     super(props);
 
     this.state = {
       loading: false,
-      queuedet: [],
+      currServing:0,
+      currQueueNum:0,
+      left:0
     };
   }
   
   componentDidMount(){
     this.setState({loading:true});
 
-    this.props.firebase.db.ref(14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/queueDetails).on('value',snapshot => {
-      var queuedet = snapshot.val().
-      this.setState({loading:false});
+    this.props.firebase.db.ref('14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ'/'queueDetails').on('value',snapshot => {
+      var details =snapshot.val();
+
+      this.setState({
+        loading:false,
+        currServing: details.currServing,
+        currQueueNum: details.currQueueNum,
+        left:currQueueNum-currServing});
     })
   }
 
   componentWillUnmount(){
-    this.props.firebase.queuedet().off();
+    this.props.firebase.db.ref('14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ'/'queueDetails').off()
   }
   
   render(){
-    const {queuedet, loading} = this.state;
+    const {loading, currServing, currQueueNum, left} = this.state;
     return(
       <div>
         {loading && <div>Loading...</div>}
-        <queuedetlist queuedet ={queuedet}/>
+        <HomePage currServing ={currServing}/>
+        <HomePage currQueueNum ={currQueueNum}/>
+        <HomePage left ={left}/>
       </div>
     );
   }
-}
-const queuedet = withFirebase(queuedetbase)
+};
 
-const queuedetlist= ({queuedet}) => (
-  <ul>
-    {queuedet.map(queued => (
-      <queuedetitem key={queued.uid} queued = {queued}/>
-    ))}
-  </ul>
-);
 
-const queuedetitem = ({queued}) => (
-  <li>
-    <strong>{queued.userID}</strong> {queued.text}
-  </li>
-)
-=======
+const QueueInfo = withFirebase(QueueDetails);
+
 const condition = (authUser) => !!authUser;
 
 export default compose(
   withEmailVerification,
   withAuthorization(condition)
 )(HomePage);
->>>>>>> 667de024f909d45326cdb647bd879594003381d6
