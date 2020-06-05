@@ -7,9 +7,13 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.5.0",
+<<<<<<< HEAD
     "dashboard": "0.0.1",
     "firebase": "^7.14.5",
     "mdbreact": "^4.27.0",
+=======
+    "firebase": "^7.14.5",
+>>>>>>> 667de024f909d45326cdb647bd879594003381d6
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",

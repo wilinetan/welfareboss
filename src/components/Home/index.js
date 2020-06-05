@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React from 'react';
 // import { withAuthorization } from '../Session';
 // import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer } from "mdbreact";
@@ -58,6 +59,12 @@ import React, { Component } from 'react';
 import { compose } from 'recompose'; 
 import { withAuthorization, AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
+=======
+import React from "react";
+import { compose } from "recompose";
+
+import { withAuthorization, withEmailVerification } from "../Session";
+>>>>>>> 667de024f909d45326cdb647bd879594003381d6
 
 const HomePage = () => (
   <AuthUserContext.Consumer>
@@ -72,6 +79,7 @@ const HomePage = () => (
   </AuthUserContext.Consumer>
 );
 
+<<<<<<< HEAD
 
 class queuedetbase extends Component {
   constructor(props){
@@ -121,3 +129,11 @@ const queuedetitem = ({queued}) => (
     <strong>{queued.userID}</strong> {queued.text}
   </li>
 )
+=======
+const condition = (authUser) => !!authUser;
+
+export default compose(
+  withEmailVerification,
+  withAuthorization(condition)
+)(HomePage);
+>>>>>>> 667de024f909d45326cdb647bd879594003381d6

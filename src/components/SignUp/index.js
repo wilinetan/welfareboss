@@ -1,158 +1,176 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
- 
-import { withFirebase } from '../Firebase';
-import * as ROUTES from '../../constants/routes';
- 
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
+import { compose } from "recompose";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
+
+import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
+
 const SignUpPage = () => (
-  <div style={{ paddingLeft: '80px', paddingRight: '80px' }}>
+  <div style={{ paddingLeft: "80px", paddingRight: "80px" }}>
     <h1>Sign Up</h1>
     <SignUpForm />
   </div>
 );
 
 const INITIAL_STATE = {
-  username: '',
-  email: '',
-  passwordOne: '',
-  passwordTwo: '',
+  name: "",
+  email: "",
+  passwordOne: "",
+  passwordTwo: "",
+  faculty: "",
   file: null,
   error: null,
 };
- 
+
 class SignUpFormBase extends Component {
   constructor(props) {
     super(props);
 
     this.state = { ...INITIAL_STATE };
   }
- 
-  onSubmit = event => {
-    const { username, email, passwordOne, file } = this.state;
- 
+
+  onSubmit = (event) => {
+    const { name, email, passwordOne, file, faculty } = this.state;
     this.props.firebase
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then(authUser => {
+      .doCreateUserWithEmailAndPassword(email.concat("@u.nus.edu"), passwordOne)
+      .then((authUser) => {
         // Update user profile
-        this.props.firebase.doUpdateProfile(username);
+        this.props.firebase.doUpdateProfile(name);
 
         // Upload file to Firebase storage
-        var uploadFile = this.props.firebase.userStorage(authUser.user.uid).child(file.name).put(file);
-        
+        var uploadFile = this.props.firebase
+          .userStorage(authUser.user.uid)
+          .child(file.name)
+          .put(file);
+
         // Create user in the Firebase realtime database
-        uploadFile.then(snapshot => {
-          snapshot.ref.getDownloadURL().then(url => {
-            this.props.firebase
-              .user(authUser.user.uid)
-              .set({
-                username,
-                email,
-                file: url
-              });
+        uploadFile.then((snapshot) => {
+          snapshot.ref.getDownloadURL().then((url) => {
+            this.props.firebase.user(authUser.user.uid).set({
+              name,
+              email,
+              faculty,
+              file: url,
+            });
           });
         });
       })
-      .then(authUser => {
+      .then(() => {
+        return this.props.firebase.doSendEmailVerification();
+      })
+      .then(() => {
         // Reset state to intial state and redirect user to Home page
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({ error });
       });
- 
+
     event.preventDefault();
   };
- 
-  onChange = event => {
+
+  onChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  onFileChange = event => {
-    this.setState({ file: event.target.files[0] })
-  }
- 
+  onFileChange = (event) => {
+    this.setState({ file: event.target.files[0] });
+  };
+
   render() {
-    const {
-      username,
-      email,
-      passwordOne,
-      passwordTwo,
-      error,
-    } = this.state;
+    const { name, email, passwordOne, passwordTwo, error } = this.state;
 
     // const isInvalid =
     //   passwordOne !== passwordTwo ||
     //   passwordOne === '' ||
     //   email === '' ||
-    //   username === '';
+    //   name === '';
 
     return (
       <Form onSubmit={this.onSubmit}>
         <Form.Group controlId="formBasicName">
           <Form.Label>Full Name</Form.Label>
-          <Form.Control 
-            name="username"
-            value={username}
-            type="text" 
+          <Form.Control
+            name="name"
+            value={name}
+            type="text"
             placeholder="Enter full name"
-            onChange={this.onChange} 
+            onChange={this.onChange}
             required
           />
         </Form.Group>
 
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control 
+        <Form.Group controlId="formEmail">
+          <Form.Label>NUS email address</Form.Label>
+          <InputGroup className="email">
+            <Form.Control
+              placeholder="NUSNET ID"
+              name="email"
+              value={email}
+              aria-label="NUSNET ID"
+              aria-describedby="basic-addon2"
+              onChange={this.onChange}
+              required
+            />
+            <InputGroup.Append>
+              <InputGroup.Text id="basic-addon2">@u.nus.edu</InputGroup.Text>
+            </InputGroup.Append>
+          </InputGroup>
+        </Form.Group>
+
+        <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Faculty</Form.Label>
+          <Form.Control
+            as="select"
             required
-            name="email"
-            value={email}
-            type="email" 
-            placeholder="Enter email"
-            onChange={this.onChange} 
-          />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
+            name="faculty"
+            onChange={this.onChange}
+          >
+            <option hidden>Select your faculty</option>
+            <option value="FASS">Arts and Social Sciences</option>
+            <option value="Business">Business</option>
+            <option value="Computing">Computing</option>
+            <option value="Dentistry">Dentistry</option>
+            <option value="SDE">Design and Environment</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Law">Law</option>
+            <option value="Medicine">Medicine</option>
+            <option value="Science">Science</option>
+          </Form.Control>
         </Form.Group>
 
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control 
+          <Form.Control
             required
             name="passwordOne"
             value={passwordOne}
-            type="password" 
+            type="password"
             placeholder="Password"
-            onChange={this.onChange} 
+            onChange={this.onChange}
           />
         </Form.Group>
 
         <Form.Group controlId="formConfirmPassword">
           <Form.Label>Confirm Password</Form.Label>
-          <Form.Control 
+          <Form.Control
             required
             name="passwordTwo"
             value={passwordTwo}
-            type="password" 
+            type="password"
             placeholder="Password"
-            onChange={this.onChange} 
+            onChange={this.onChange}
           />
         </Form.Group>
 
-        <Form.Group controlId="formFileUpload">
-          <Form.Label>Upload Excel File</Form.Label>
-          <Form.Control 
-            required
-            type="file"
-            placeholder="Upload file"
-            onChange={this.onFileChange}
-          />
+        <Form.Group required onChange={this.onFileChange}>
+          <Form.File id="exampleFormControlFile1" label="Upload Excel File" />
         </Form.Group>
-        
+
         <Button variant="primary" type="submit">
           Sign Up
         </Button>
@@ -163,18 +181,15 @@ class SignUpFormBase extends Component {
   }
 }
 //disabled={isInvalid}
- 
+
 const SignUpLink = () => (
   <p>
     Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
   </p>
 );
 
-const SignUpForm = compose(
-  withRouter,
-  withFirebase,
-)(SignUpFormBase);
- 
+const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase);
+
 export default SignUpPage;
- 
+
 export { SignUpForm, SignUpLink };
