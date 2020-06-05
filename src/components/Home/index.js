@@ -1,126 +1,111 @@
 
-// import React from 'react';
-// import { withAuthorization } from '../Session';
-// import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer } from "mdbreact";
-
-// const HomePage = () => {
-//   return (
-//   <MDBContainer>
-//     <MDBCardGroup>
-//       <MDBCard>
-//         <MDBCardBody>
-//           <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
-//           <MDBCardText >
-//             This is a wider panel with supporting text below as a natural
-//             lead-in to additional content. This content is a little bit
-//             longer.
-//           </MDBCardText>
-//           <MDBCardText small muted>
-//             Last updated 3 mins ago
-//           </MDBCardText>
-//         </MDBCardBody>
-//       </MDBCard>
-//       <MDBCard>
-//         <MDBCardBody>
-//           <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
-//           <MDBCardText>
-//             This panel has supporting text below as a natural lead-in to
-//             additional content.
-//           </MDBCardText>
-//           <MDBCardText small muted>
-//             Last updated 3 mins ago
-//           </MDBCardText>
-//         </MDBCardBody>
-//       </MDBCard>
-//       <MDBCard>
-//         <MDBCardBody>
-//           <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
-//           <MDBCardText>
-//             This is a wider panel with supporting text below as a natural
-//             lead-in to additional content. This panel has even longer
-//             content than the first to show that equal height action.
-//           </MDBCardText>
-//           <MDBCardText small muted>
-//             Last updated 3 mins ago
-//           </MDBCardText>
-//         </MDBCardBody>
-//       </MDBCard>
-//     </MDBCardGroup>
-//   </MDBContainer>
-//   );
-//   };
-
- 
-
 import React, { Component } from "react";
-import { compose } from "recompose";
-
 import {
   AuthUserContext,
   withAuthorization,
   withEmailVerification,
 } from "../Session";
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer } from "mdbreact";
+import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
 
-const HomePage = () => (
-  <AuthUserContext.Consumer>
-    {(authUser) => 
-      <div>
-        <h1>Queue Details</h1>
-        <p>Current Serving Queue Number:</p>
-        <p>Last Issued Queue Number:</p>
-        <p>Number of people in Queue:</p>
-      </div>
-    }
-  </AuthUserContext.Consumer>
-);
+const HomePage = () => {
+  return (
+    <QueueInfo />
+  );
+  };
 
+ 
+
+
+
+// const HomePage = () => (
+//   <AuthUserContext.Consumer>
+//     {(authUser) => (
+//       <div>
+//         <h1>Queue Details</h1>
+//         <QueueInfo />
+//       </div>
+//     )}
+//   </AuthUserContext.Consumer>
+// );
 
 class QueueDetails extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
       loading: false,
-      currServing:0,
-      currQueueNum:0,
-      left:0
+      currServing: 0,
+      currQueueNum: 0,
+      left: 0,
     };
   }
-  
-  componentDidMount(){
-    this.setState({loading:true});
 
-    this.props.firebase.db.ref('14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ'/'queueDetails').on('value',snapshot => {
-      var details =snapshot.val();
+  componentDidMount() {
+    this.setState({ loading: true });
 
-      this.setState({
-        loading:false,
-        currServing: details.currServing,
-        currQueueNum: details.currQueueNum,
-        left:currQueueNum-currServing});
-    })
+    this.props.firebase.db
+      .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/queueDetails")
+      .on("value", (snapshot) => {
+        var details = snapshot.val();
+        console.log("details", details);
+
+        this.setState({
+          loading: false,
+          currServing: details.currServing,
+          currQueueNum: details.currQueueNum,
+          left: details.currQueueNum - details.currServing,
+        });
+      });
   }
 
-  componentWillUnmount(){
-    this.props.firebase.db.ref('14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ'/'queueDetails').off()
-  }
-  
-  render(){
-    const {loading, currServing, currQueueNum, left} = this.state;
-    return(
+  render() {
+    const { loading, currServing, currQueueNum, left } = this.state;
+    return (
       <div>
-        {loading && <div>Loading...</div>}
-        <HomePage currServing ={currServing}/>
-        <HomePage currQueueNum ={currQueueNum}/>
-        <HomePage left ={left}/>
+        {loading ? (
+          "Loading details"
+        ) : (
+          <React.Fragment>
+            <div class='text-center'>
+            <MDBContainer >
+              <MDBCardGroup>
+                <MDBCard>
+                  <MDBCardBody>
+                    <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
+                    <MDBCardText tag='h2'>
+                      {currServing}
+                    </MDBCardText>
+                  </MDBCardBody>
+                </MDBCard>
+                <MDBCard>
+                  <MDBCardBody>
+                    <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
+                    <MDBCardText tag='h2'>
+                    {currQueueNum}
+                    </MDBCardText>
+                  </MDBCardBody>
+                </MDBCard>
+                <MDBCard>
+                  <MDBCardBody>
+                    <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
+                    <MDBCardText tag='h2'>
+                      {left}
+                    </MDBCardText>
+                  </MDBCardBody>
+                </MDBCard>
+              </MDBCardGroup>
+            </MDBContainer>
+            </div>
+          </React.Fragment>
+        )}
       </div>
     );
   }
-};
+}
 
-
-const QueueInfo = withFirebase(QueueDetails);
+const QueueInfo = withFirebase(QueueDetails) 
 
 const condition = (authUser) => !!authUser;
 
