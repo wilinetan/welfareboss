@@ -40,13 +40,6 @@ class AccountDetails extends Component {
     this.setState({ loading: true });
 
     this.props.firebase
-<<<<<<< HEAD
-    .user(this.props.authUser.uid).once("value", snapshot => {
-      var fileUrl = snapshot.val().file;
-      this.setState({
-        loading: false,
-        url: fileUrl
-=======
       .user(this.props.authUser.uid)
       .once("value", (snapshot) => {
         var details = snapshot.val();
@@ -56,7 +49,6 @@ class AccountDetails extends Component {
           url: details.file,
           faculty: details.faculty,
         });
->>>>>>> 667de024f909d45326cdb647bd879594003381d6
       });
   }
 

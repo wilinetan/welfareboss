@@ -7,9 +7,6 @@ import { AuthUserContext } from "../Session";
 
 const Navigation = () => (
   <div className="nav">
-<<<<<<< HEAD
-    <img src="https://lh3.googleusercontent.com/WAj_qKdZbj8R5iPHhL03ygIZkVAVo2n7Y6-hALAyIWhtof7vr6kdEGL3wi3tWQA2pdCq_-5zFdZ1NjvBjnEjdEodAYGz0TfmmbrUMMuaipRvd33oQm6bl_3zVyBjy4ghw0E_InZIsA=w2400" alt ='logo' width='230px' height ='80px' style={{marginLeft:'8px', marginTop:'8px'}} ></img>
-=======
     <img
       alt=""
       src="https://lh3.googleusercontent.com/WAj_qKdZbj8R5iPHhL03ygIZkVAVo2n7Y6-hALAyIWhtof7vr6kdEGL3wi3tWQA2pdCq_-5zFdZ1NjvBjnEjdEodAYGz0TfmmbrUMMuaipRvd33oQm6bl_3zVyBjy4ghw0E_InZIsA=w2400"
@@ -17,7 +14,6 @@ const Navigation = () => (
       height="80px"
       style={{ marginLeft: "8px", marginTop: "8px" }}
     ></img>
->>>>>>> 667de024f909d45326cdb647bd879594003381d6
     <AuthUserContext.Consumer>
       {(authUser) =>
         authUser && authUser.emailVerified ? (

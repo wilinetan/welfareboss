@@ -14,7 +14,7 @@ const Landing = () => (
 );
 const Landing1 = () => (
   <div>
-    <h1 style={{ textAlign: "center", fontFamily: "Bookman", margin: "25px" }}>
+    <h1 style={{ textAlign: "center", fontFamily: "Open Sans", margin: "25px" }}>
       Welcome to WelfareBoss!
     </h1>
     <div
