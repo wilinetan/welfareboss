@@ -62,7 +62,7 @@ const UserList = ({ users }) => (
           <strong>E-Mail:</strong> {user.email}
         </span>
         <span>
-          <strong>Username:</strong> {user.username}
+          <strong>Username:</strong> {user.name}
         </span>
       </li>
     ))}

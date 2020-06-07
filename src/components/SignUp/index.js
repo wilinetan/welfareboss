@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "recompose";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
 
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
+
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
 
 const SignUpPage = () => (
   <div style={{ paddingLeft: "80px", paddingRight: "80px" }}>
@@ -82,13 +83,29 @@ class SignUpFormBase extends Component {
   };
 
   render() {
-    const { name, email, passwordOne, passwordTwo, error } = this.state;
+    const {
+      name,
+      email,
+      passwordOne,
+      passwordTwo,
+      faculty,
+      error,
+    } = this.state;
 
-    // const isInvalid =
-    //   passwordOne !== passwordTwo ||
-    //   passwordOne === '' ||
-    //   email === '' ||
-    //   name === '';
+    const isInvalid =
+      email !== ""
+        ? email.length !== 8 || email.charAt(0).toUpperCase() !== "E"
+        : false;
+
+    const isValid = email.length === 8 && email.charAt(0).toUpperCase() === "E";
+
+    const invalidPassword =
+      passwordOne === "" || passwordTwo === ""
+        ? false
+        : isValid &&
+          name !== "" &&
+          faculty !== "" &&
+          passwordOne !== passwordTwo;
 
     return (
       <Form onSubmit={this.onSubmit}>
@@ -114,11 +131,19 @@ class SignUpFormBase extends Component {
               aria-label="NUSNET ID"
               aria-describedby="basic-addon2"
               onChange={this.onChange}
+              isInvalid={isInvalid}
+              isValid={isValid}
               required
             />
             <InputGroup.Append>
               <InputGroup.Text id="basic-addon2">@u.nus.edu</InputGroup.Text>
             </InputGroup.Append>
+            <Form.Control.Feedback type="invalid">
+              Invalid ID.
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type="valid">
+              Valid ID.
+            </Form.Control.Feedback>
           </InputGroup>
         </Form.Group>
 
@@ -131,11 +156,15 @@ class SignUpFormBase extends Component {
             onChange={this.onChange}
           >
             <option hidden>Select your faculty</option>
-            <option value="FASS">Arts and Social Sciences</option>
+            <option value="Arts and Social Sciences">
+              Arts and Social Sciences
+            </option>
             <option value="Business">Business</option>
             <option value="Computing">Computing</option>
             <option value="Dentistry">Dentistry</option>
-            <option value="SDE">Design and Environment</option>
+            <option value="Design and Environment">
+              Design and Environment
+            </option>
             <option value="Engineering">Engineering</option>
             <option value="Law">Law</option>
             <option value="Medicine">Medicine</option>
@@ -146,32 +175,36 @@ class SignUpFormBase extends Component {
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
-            required
             name="passwordOne"
             value={passwordOne}
             type="password"
             placeholder="Password"
             onChange={this.onChange}
+            required
           />
         </Form.Group>
 
         <Form.Group controlId="formConfirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
-            required
             name="passwordTwo"
             value={passwordTwo}
             type="password"
             placeholder="Password"
             onChange={this.onChange}
+            isInvalid={invalidPassword}
+            required
           />
+          <Form.Control.Feedback type="invalid">
+            Invalid password. Please ensure both passwords are the same.
+          </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group required onChange={this.onFileChange}>
           <Form.File id="exampleFormControlFile1" label="Upload Excel File" />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" disabled={invalidPassword}>
           Sign Up
         </Button>
 

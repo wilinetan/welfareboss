@@ -1,21 +1,29 @@
 import React, { Component } from "react";
 import {
+  // eslint-disable-next-line
   AuthUserContext,
   withAuthorization,
   withEmailVerification,
 } from "../Session";
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer } from "mdbreact";
+import {
+  MDBCard,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBCardGroup,
+  MDBContainer,
+} from "mdbreact";
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
+import Spinner from "react-bootstrap/Spinner";
 
 const HomePage = () => {
   return (
-  <div>
-    <QueueInfo />
-  </div>
+    <div>
+      <QueueInfo />
+    </div>
   );
-  };
-
+};
 
 // const HomePage = () => (
 //   <AuthUserContext.Consumer>
@@ -39,7 +47,7 @@ class QueueDetails extends Component {
       left: 0,
     };
   }
-  
+
   componentDidMount() {
     this.setState({ loading: true });
 
@@ -63,38 +71,40 @@ class QueueDetails extends Component {
     return (
       <div>
         {loading ? (
-          "Loading details"
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
         ) : (
           <React.Fragment>
-            <div class='text-center'>
-            <MDBContainer >
-              <MDBCardGroup>
-                <MDBCard>
-                  <MDBCardBody>
-                    <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
-                    <MDBCardText tag='h2'>
-                      {currServing}
-                    </MDBCardText>
-                  </MDBCardBody>
-                </MDBCard>
-                <MDBCard>
-                  <MDBCardBody>
-                    <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
-                    <MDBCardText tag='h2'>
-                    {currQueueNum}
-                    </MDBCardText>
-                  </MDBCardBody>
-                </MDBCard>
-                <MDBCard>
-                  <MDBCardBody>
-                    <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
-                    <MDBCardText tag='h2'>
-                      {left}
-                    </MDBCardText>
-                  </MDBCardBody>
-                </MDBCard>
-              </MDBCardGroup>
-            </MDBContainer>
+            <div class="text-center">
+              <MDBContainer>
+                <MDBCardGroup>
+                  <MDBCard>
+                    <MDBCardBody>
+                      <MDBCardTitle tag="h5">
+                        Current Serving Queue Number
+                      </MDBCardTitle>
+                      <MDBCardText tag="h2">{currServing}</MDBCardText>
+                    </MDBCardBody>
+                  </MDBCard>
+                  <MDBCard>
+                    <MDBCardBody>
+                      <MDBCardTitle tag="h5">
+                        Last Issued Queue Number
+                      </MDBCardTitle>
+                      <MDBCardText tag="h2">{currQueueNum}</MDBCardText>
+                    </MDBCardBody>
+                  </MDBCard>
+                  <MDBCard>
+                    <MDBCardBody>
+                      <MDBCardTitle tag="h5">
+                        Number of people in Queue
+                      </MDBCardTitle>
+                      <MDBCardText tag="h2">{left}</MDBCardText>
+                    </MDBCardBody>
+                  </MDBCard>
+                </MDBCardGroup>
+              </MDBContainer>
             </div>
           </React.Fragment>
         )}
@@ -103,7 +113,7 @@ class QueueDetails extends Component {
   }
 }
 
-const QueueInfo = withFirebase(QueueDetails) 
+const QueueInfo = withFirebase(QueueDetails);
 
 const condition = (authUser) => !!authUser;
 
