@@ -9,6 +9,7 @@ import {
 import { withFirebase } from "../Firebase";
 import { PasswordForgetForm } from "../PasswordForget";
 import PasswordChangeForm from "../PasswordChange";
+import Spinner from "react-bootstrap/Spinner";
 
 const AccountPage = () => (
   <AuthUserContext.Consumer>
@@ -58,7 +59,9 @@ class AccountDetails extends Component {
     return (
       <div>
         {loading ? (
-          " Loading details..."
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
         ) : (
           <React.Fragment>
             <p>Faculty: {faculty}</p>
