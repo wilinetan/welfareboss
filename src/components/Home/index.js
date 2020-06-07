@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import {
   AuthUserContext,
@@ -11,12 +10,11 @@ import { withFirebase } from "../Firebase";
 
 const HomePage = () => {
   return (
+  <div>
     <QueueInfo />
+  </div>
   );
   };
-
- 
-
 
 
 // const HomePage = () => (
@@ -41,7 +39,7 @@ class QueueDetails extends Component {
       left: 0,
     };
   }
-
+  
   componentDidMount() {
     this.setState({ loading: true });
 
