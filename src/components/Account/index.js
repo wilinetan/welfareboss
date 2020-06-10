@@ -9,7 +9,6 @@ import {
 import { withFirebase } from "../Firebase";
 import { PasswordForgetForm } from "../PasswordForget";
 import PasswordChangeForm from "../PasswordChange";
-import Spinner from "react-bootstrap/Spinner";
 
 const AccountPage = () => (
   <AuthUserContext.Consumer>
@@ -32,7 +31,7 @@ class AccountDetails extends Component {
 
     this.state = {
       loading: false,
-      url: null,
+      url: "",
       faculty: "",
     };
   }
@@ -58,26 +57,26 @@ class AccountDetails extends Component {
 
     return (
       <div>
-        {loading ? (
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        ) : (
-          <React.Fragment>
-            <p>Faculty: {faculty}</p>
-            <p>
-              Excel file:{" "}
-              <a target="_blank" rel="noopener noreferrer" href={url}>
-                {" "}
-                Download excel file
-              </a>{" "}
-            </p>
-          </React.Fragment>
-        )}
+        {loading && <div>Loading ...</div>}
+
+        <DbInfo faculty={faculty} url={url} />
       </div>
     );
   }
 }
+
+const DbInfo = ({ faculty, url }) => (
+  <React.Fragment>
+    <p>Faculty: {faculty}</p>
+    <p>
+      Excel file:{" "}
+      <a target="_blank" rel="noopener noreferrer" href={url}>
+        {" "}
+        Download excel file
+      </a>{" "}
+    </p>
+  </React.Fragment>
+);
 
 const AccountInfo = withFirebase(AccountDetails);
 

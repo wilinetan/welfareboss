@@ -29,6 +29,7 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script src="https://apis.google.com/js/api.js"></script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -43,24 +44,23 @@
 </html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Embedded Analytics with Tableau</title>
-  
-</head>
-<body>
-  <div id="vizContainer"></div>
-  <script src="https://us-east-1.online.tableau.com/javascripts/api/tableau-2.min.js"></script>
-  <script>
-    var viz
-    function initViz() {
-      var containerDiv = document.getElementById("vizContainer"),
-      url = "https:/n  /us-east-1.online.tableau.com/t/zuar/views/Regional/GlobalTemperatures";
+  <head>
+    <meta charset="utf-8" />
+    <title>Embedded Analytics with Tableau</title>
+  </head>
+  <body>
+    <div id="vizContainer"></div>
+    <script src="https://us-east-1.online.tableau.com/javascripts/api/tableau-2.min.js"></script>
+    <script>
+      var viz;
+      function initViz() {
+        var containerDiv = document.getElementById("vizContainer"),
+          url =
+            "https:/n  /us-east-1.online.tableau.com/t/zuar/views/Regional/GlobalTemperatures";
 
-      viz = new tableau.Viz(containerDiv, url);
-    }
-    initViz();
-  </script>
-  
-</body>
+        viz = new tableau.Viz(containerDiv, url);
+      }
+      initViz();
+    </script>
+  </body>
 </html>
