@@ -4,6 +4,7 @@ import { compose } from "recompose";
 
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
+import UploadExcel from "../UploadExcel";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -56,6 +57,14 @@ class SignUpFormBase extends Component {
               faculty,
               file: url,
             });
+
+            // Update spreadsheetfile id to Firebase
+            new UploadExcel(
+              authUser.user.uid,
+              faculty,
+              url,
+              this.props.firebase
+            ).loadClient();
           });
         });
       })
