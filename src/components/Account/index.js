@@ -39,7 +39,7 @@ class AccountDetails extends Component {
 
     this.state = {
       loading: false,
-      url: null,
+      url: "",
       faculty: "",
     };
   }
@@ -83,6 +83,19 @@ class AccountDetails extends Component {
     );
   }
 }
+
+const DbInfo = ({ faculty, url }) => (
+  <React.Fragment>
+    <p>Faculty: {faculty}</p>
+    <p>
+      Excel file:{" "}
+      <a target="_blank" rel="noopener noreferrer" href={url}>
+        {" "}
+        Download excel file
+      </a>{" "}
+    </p>
+  </React.Fragment>
+);
 
 const AccountInfo = withFirebase(AccountDetails);
 

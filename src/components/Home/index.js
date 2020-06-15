@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  // eslint-disable-next-line
   AuthUserContext,
   withAuthorization,
   withEmailVerification,
@@ -8,6 +9,7 @@ import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBConta
 
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
+import QueueList from "../QueueList";
 
 const HomePage = () => {
   return (
@@ -18,8 +20,7 @@ const HomePage = () => {
     <QueueList />
   </div>
   );
-  };
-
+};
 
 
 
@@ -48,7 +49,7 @@ class QueueDetails extends Component {
       left: 0,
     };
   }
-  
+
   componentDidMount() {
     this.setState({ loading: true });
 
@@ -56,7 +57,6 @@ class QueueDetails extends Component {
       .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/queueDetails")
       .on("value", (snapshot) => {
         var details = snapshot.val();
-        console.log("details", details);
 
         this.setState({
           loading: false,
@@ -71,48 +71,49 @@ class QueueDetails extends Component {
     const { loading, currServing, currQueueNum, left } = this.state;
     return (
       <div>
-        {loading ? (
-          "Loading details"
-        ) : (
-          <React.Fragment>
-            <div class='text-center'>
-            <MDBContainer >
-              <MDBCardGroup>
-                <MDBCard>
-                  <MDBCardBody>
-                    <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
-                    <MDBCardText tag='h2'>
-                      {currServing}
-                    </MDBCardText>
-                  </MDBCardBody>
-                </MDBCard>
-                <MDBCard>
-                  <MDBCardBody>
-                    <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
-                    <MDBCardText tag='h2'>
-                    {currQueueNum}
-                    </MDBCardText>
-                  </MDBCardBody>
-                </MDBCard>
-                <MDBCard>
-                  <MDBCardBody>
-                    <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
-                    <MDBCardText tag='h2'>
-                      {left}
-                    </MDBCardText>
-                  </MDBCardBody>
-                </MDBCard>
-              </MDBCardGroup>
-            </MDBContainer>
-            </div>
-          </React.Fragment>
-        )}
+        {loading && <div>Loading ...</div>}
+
+        <Dashboard
+          loading={loading}
+          currServing={currServing}
+          currQueueNum={currQueueNum}
+          left={left}
+        />
       </div>
     );
   }
 }
 
-const QueueInfo = withFirebase(QueueDetails) 
+const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
+  <React.Fragment>
+    <div className="text-center">
+      <MDBContainer>
+        <MDBCardGroup>
+          <MDBCard>
+            <MDBCardBody>
+              <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
+              <MDBCardText tag="h2">{currServing}</MDBCardText>
+            </MDBCardBody>
+          </MDBCard>
+          <MDBCard>
+            <MDBCardBody>
+              <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
+              <MDBCardText tag="h2">{currQueueNum}</MDBCardText>
+            </MDBCardBody>
+          </MDBCard>
+          <MDBCard>
+            <MDBCardBody>
+              <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
+              <MDBCardText tag="h2">{left}</MDBCardText>
+            </MDBCardBody>
+          </MDBCard>
+        </MDBCardGroup>
+      </MDBContainer>
+    </div>
+  </React.Fragment>
+);
+
+const QueueInfo = withFirebase(QueueDetails);
 
 // part 2: checklist 
 class QueueListBase extends Component {

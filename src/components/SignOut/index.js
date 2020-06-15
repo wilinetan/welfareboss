@@ -1,26 +1,40 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
- 
-import { withFirebase } from '../Firebase';
-import * as ROUTES from '../../constants/routes';
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { compose } from "recompose";
+
+import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
+
+import Button from "react-bootstrap/Button";
 
 class SignOutButton extends Component {
-  handleClick = (firebase, history)  => {
-    firebase.doSignOut()
+  handleClick = (firebase, history) => {
+    firebase
+      .doSignOut()
       .then(() => history.push(ROUTES.LANDING))
       .catch((err) => console.log(err));
-  }
+  };
 
   render() {
     const { history, firebase } = this.props;
     return (
-      <button type="button" style={{color:'rgba(253, 153, 153)', backgroundColor:'black',borderBlockColor:'white'}}onClick={() => this.handleClick(firebase, history)}>
+      <Button
+        variant="outline-light"
+        onClick={() => this.handleClick(firebase, history)}
+      >
         Sign Out
-      </button>
+      </Button>
+      // <button type="button" onClick={() => this.handleClick(firebase, history)}>
+      //   Sign Out
+      // </button>
     );
   }
 }
+<<<<<<< HEAD
  
 export default compose(withRouter, withFirebase)(SignOutButton);
 
+=======
+
+export default compose(withRouter, withFirebase)(SignOutButton);
+>>>>>>> 3f0bce4aa69b793ee000a0398cd6aadbd8952973
