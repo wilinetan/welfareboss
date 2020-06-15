@@ -87,7 +87,7 @@ class QueueList extends Component {
 }
 
 const StudentList = ({ students, markCollect }) => (
-  <Table striped bordered hover size="sm" style={{ width: "1200px" }}>
+  <Table bordered hover size="sm" style={{ width: "1200px" }}>
     <thead>
       <tr>
         <th>Queue Number</th>
