@@ -13,13 +13,40 @@ import PasswordChangeForm from "../PasswordChange";
 const AccountPage = () => (
   <AuthUserContext.Consumer>
     {(authUser) => (
-      <div className="accountdetails">
-        <h1>Account details</h1>
-        <p>Name: {authUser.displayName}</p>
-        <p>Email: {authUser.email}</p>
-        <AccountInfo authUser={authUser} />
-        <PasswordForgetForm />
-        <PasswordChangeForm />
+      <div
+        className="container"
+        style={{ border: "solid", fontFamily: "system-ui" }}
+      >
+        <h2
+          style={{
+            marginTop: "20px",
+            borderBottom: "solid",
+            marginBottom: "30px",
+          }}
+        >
+          My Account
+        </h2>
+        <div className="row" style={{ marginBottom: "20px", fontSize: "18px" }}>
+          <div className="col-4">Name: {authUser.displayName}</div>
+          <div className="col-4">Email: {authUser.email}</div>
+        </div>
+        <div className="row" style={{ marginBottom: "20px", fontSize: "18px" }}>
+          <div className="col">
+            <AccountInfo authUser={authUser} />
+          </div>
+        </div>
+        <div
+          className="row"
+          style={{ marginBottom: "20px", fontSize: "18px", marginLeft: "3px" }}
+        >
+          <PasswordForgetForm />
+        </div>
+        <div
+          className="row"
+          style={{ marginBottom: "20px", fontSize: "18px", marginLeft: "3px" }}
+        >
+          <PasswordChangeForm />
+        </div>
       </div>
     )}
   </AuthUserContext.Consumer>
@@ -32,7 +59,13 @@ class AccountDetails extends Component {
     this.state = {
       loading: false,
       url: "",
-      faculty: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+      venue: "",
+      nussuLink: "",
+      facultyLink: "",
     };
   }
 
@@ -47,33 +80,67 @@ class AccountDetails extends Component {
         this.setState({
           loading: false,
           url: details.file,
-          faculty: details.faculty,
+          startDate: details.startDate,
+          endDate: details.endDate,
+          startTime: details.startTime,
+          endTime: details.endTime,
+          venue: details.venue,
+          nussuLink: details.nussuLink,
+          facultyLink: details.facultyLink,
         });
       });
   }
 
   render() {
-    const { url, loading, faculty } = this.state;
+    const { loading, ...rest } = this.state;
 
     return (
       <div>
         {loading && <div>Loading ...</div>}
-
-        <DbInfo faculty={faculty} url={url} />
+        <DbInfo rest={rest} />
       </div>
     );
   }
 }
 
-const DbInfo = ({ faculty, url }) => (
+const DbInfo = ({ rest }) => (
   <React.Fragment>
-    <p>Faculty: {faculty}</p>
     <p>
       Excel file:{" "}
-      <a target="_blank" rel="noopener noreferrer" href={url}>
-        {" "}
-        Download excel file
-      </a>{" "}
+      {
+        <a target="_blank" rel="noopener noreferrer" href={rest.url}>
+          Download excel file
+        </a>
+      }{" "}
+    </p>
+    <p>Start Date: {rest.startDate}</p>
+    <p>End Date: {rest.endDate}</p>
+    <p>Start Time: {rest.startTime}</p>
+    <p>End Time: {rest.endTime}</p>
+    <p>Venue: {rest.venue}</p>
+    <p>
+      Faculty survey link:{" "}
+      {
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={"//" + rest.facultyLink}
+        >
+          Faculty Link
+        </a>
+      }{" "}
+    </p>
+    <p>
+      NUSSU survey link:{" "}
+      {
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={"//" + rest.nussuLink}
+        >
+          NUSSU Link
+        </a>
+      }{" "}
     </p>
   </React.Fragment>
 );

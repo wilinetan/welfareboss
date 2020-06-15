@@ -70,8 +70,9 @@ const NavigationNonAuth = () => (
 );
 
 const linkStyle = {
-  fontFamily: "Bookman",
-  color: "black",
+  fontFamily: "Bookman bold",
+  color: 'rgba(253, 153, 153)',
+  fontSize:'18px',
 };
 
 export default Navigation;

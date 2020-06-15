@@ -14,7 +14,8 @@ code {
 }
 
 .nav {
-  background: rgba(212, 160, 160, 0.973);
+
+  background: rgba(0, 0, 0);
   padding: 2px;
   text-align: right;
   height: 100px;
@@ -27,8 +28,9 @@ code {
   display: inline-block;
   padding: 2px;
   text-align: right;
-  color: black;
-  vertical-align: bottom;
+  color: pink;
+  vertical-align:bottom;
+  font-size: '18px';
 }
 
 .links li {

@@ -4,15 +4,17 @@ import { compose } from "recompose";
 
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
-import UploadExcel from "../UploadExcel";
+// import UploadExcel from "../UploadExcel";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import Alert from "react-bootstrap/Alert";
+import DateRangePicker from "@wojtekmaj/react-daterange-picker";
+import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 
 const SignUpPage = () => (
-  <div style={{ paddingLeft: "80px", paddingRight: "80px" }}>
+  <div style={{ paddingLeft: "80px", paddingRight: "80px", height: "100%" }}>
     <h1>Sign Up</h1>
     <SignUpForm />
   </div>
@@ -20,10 +22,18 @@ const SignUpPage = () => (
 
 const INITIAL_STATE = {
   name: "",
-  email: "",
+  nusnetid: "",
   passwordOne: "",
   passwordTwo: "",
-  faculty: "",
+  venue: "",
+  facultyLink: "",
+  nussuLink: "",
+  dateRange: null,
+  startDate: "",
+  endDate: "",
+  timeRange: ["00:00", "00:00"],
+  startTime: "00:00",
+  endTime: "00:00",
   file: null,
   error: null,
 };
@@ -36,9 +46,23 @@ class SignUpFormBase extends Component {
   }
 
   onSubmit = (event) => {
-    const { name, email, passwordOne, file, faculty } = this.state;
+    const {
+      name,
+      nusnetid,
+      passwordOne,
+      file,
+      startTime,
+      endTime,
+      startDate,
+      endDate,
+      facultyLink,
+      nussuLink,
+      venue,
+    } = this.state;
+
+    const email = nusnetid.concat("@u.nus.edu");
     this.props.firebase
-      .doCreateUserWithEmailAndPassword(email.concat("@u.nus.edu"), passwordOne)
+      .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then((authUser) => {
         // Update user profile
         this.props.firebase.doUpdateProfile(name);
@@ -55,17 +79,22 @@ class SignUpFormBase extends Component {
             this.props.firebase.user(authUser.user.uid).set({
               name,
               email,
-              faculty,
               file: url,
+              startDate,
+              endDate,
+              startTime,
+              endTime,
+              facultyLink,
+              nussuLink,
+              venue,
             });
 
             // Update spreadsheetfile id to Firebase
-            new UploadExcel(
-              authUser.user.uid,
-              faculty,
-              url,
-              this.props.firebase
-            ).loadClient();
+            // new UploadExcel(
+            //   authUser.user.uid,
+            //   url,
+            //   this.props.firebase
+            // ).loadClient();
           });
         });
       })
@@ -92,30 +121,67 @@ class SignUpFormBase extends Component {
     this.setState({ file: event.target.files[0] });
   };
 
+  onDateChange = (date) => {
+    const start = date[0];
+    const end = date[1];
+
+    const formattedStart =
+      start.getDate() +
+      "/" +
+      (start.getMonth() + 1) +
+      "/" +
+      (start.getFullYear() % 100);
+
+    const formattedEnd =
+      end.getDate() +
+      "/" +
+      (end.getMonth() + 1) +
+      "/" +
+      (end.getFullYear() % 100);
+
+    this.setState({
+      dateRange: date,
+      startDate: formattedStart,
+      endDate: formattedEnd,
+    });
+  };
+
+  onTimeChange = (time) => {
+    const start = time[0].split(":").join("");
+    const end = time[1].split(":").join("");
+    this.setState({ timeRange: time, startTime: start, endTime: end });
+  };
+
   render() {
     const {
       name,
-      email,
+      nusnetid,
       passwordOne,
       passwordTwo,
-      faculty,
+      venue,
+      nussuLink,
+      facultyLink,
+      dateRange,
+      timeRange,
+      startTime,
+      endTime,
       error,
     } = this.state;
 
-    const isInvalid =
-      email !== ""
-        ? email.length !== 8 || email.charAt(0).toUpperCase() !== "E"
+    const invalidId =
+      nusnetid !== ""
+        ? nusnetid.length !== 8 || nusnetid.charAt(0).toUpperCase() !== "E"
         : false;
 
-    const isValid = email.length === 8 && email.charAt(0).toUpperCase() === "E";
+    const validId =
+      nusnetid.length === 8 && nusnetid.charAt(0).toUpperCase() === "E";
 
     const invalidPassword =
       passwordOne === "" || passwordTwo === ""
         ? false
-        : isValid &&
-          name !== "" &&
-          faculty !== "" &&
-          passwordOne !== passwordTwo;
+        : validId && name !== "" && passwordOne !== passwordTwo;
+
+    const invalidTime = parseInt(startTime) - parseInt(endTime) >= 0;
 
     return (
       <Form onSubmit={this.onSubmit}>
@@ -136,13 +202,13 @@ class SignUpFormBase extends Component {
           <InputGroup className="email">
             <Form.Control
               placeholder="NUSNET ID"
-              name="email"
-              value={email}
+              name="nusnetid"
+              value={nusnetid}
               aria-label="NUSNET ID"
               aria-describedby="basic-addon2"
               onChange={this.onChange}
-              isInvalid={isInvalid}
-              isValid={isValid}
+              isInvalid={invalidId}
+              isValid={validId}
               required
             />
             <InputGroup.Append>
@@ -155,31 +221,6 @@ class SignUpFormBase extends Component {
               Valid ID.
             </Form.Control.Feedback>
           </InputGroup>
-        </Form.Group>
-
-        <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label>Faculty</Form.Label>
-          <Form.Control
-            as="select"
-            required
-            name="faculty"
-            onChange={this.onChange}
-          >
-            <option hidden>Select your faculty</option>
-            <option value="Arts and Social Sciences">
-              Arts and Social Sciences
-            </option>
-            <option value="Business">Business</option>
-            <option value="Computing">Computing</option>
-            <option value="Dentistry">Dentistry</option>
-            <option value="Design and Environment">
-              Design and Environment
-            </option>
-            <option value="Engineering">Engineering</option>
-            <option value="Law">Law</option>
-            <option value="Medicine">Medicine</option>
-            <option value="Science">Science</option>
-          </Form.Control>
         </Form.Group>
 
         <Form.Group controlId="formBasicPassword">
@@ -208,6 +249,80 @@ class SignUpFormBase extends Component {
           <Form.Control.Feedback type="invalid">
             Invalid password. Please ensure both passwords are the same.
           </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Collection Dates</Form.Label>
+          <Form.Group>
+            <DateRangePicker
+              onChange={this.onDateChange}
+              value={dateRange}
+              required={true}
+            />
+          </Form.Group>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Collection Time</Form.Label>
+          <Form.Group>
+            <TimeRangePicker
+              onChange={this.onTimeChange}
+              value={timeRange}
+              format="hh:mm a"
+              disableClock={true}
+              maxDetail="minute"
+              required={true}
+            />
+            <Form.Text>
+              {invalidTime ? (
+                timeRange[0] === "00:00" && timeRange[1] === "00:00" ? (
+                  ""
+                ) : (
+                  <p style={{ color: "red" }}>
+                    Please input a valid time range.
+                  </p>
+                )
+              ) : (
+                <p style={{ color: "green" }}>Great!</p>
+              )}
+            </Form.Text>
+          </Form.Group>
+        </Form.Group>
+
+        <Form.Group controlId="venue">
+          <Form.Label>Venue</Form.Label>
+          <Form.Control
+            name="venue"
+            value={venue}
+            type="text"
+            placeholder="Enter collection venue"
+            onChange={this.onChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group controlId="facultylink">
+          <Form.Label>Faculty survey link</Form.Label>
+          <Form.Control
+            name="facultyLink"
+            value={facultyLink}
+            type="text"
+            placeholder="Enter Faculty survey link"
+            onChange={this.onChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group controlId="nussulink">
+          <Form.Label>NUSSU survey link</Form.Label>
+          <Form.Control
+            name="nussuLink"
+            value={nussuLink}
+            type="text"
+            placeholder="Enter NUSSU survey link"
+            onChange={this.onChange}
+            required
+          />
         </Form.Group>
 
         <Form.Group required onChange={this.onFileChange}>

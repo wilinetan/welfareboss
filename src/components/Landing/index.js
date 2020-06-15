@@ -14,7 +14,7 @@ const Landing = () => (
 );
 const Landing1 = () => (
   <div>
-    <h1 style={{ textAlign: "center", fontFamily: "Open Sans", margin: "25px" }}>
+    <h1 style={{ textAlign: "center", fontFamily: "Bookman", margin: "25px" }}>
       Welcome to WelfareBoss!
     </h1>
     <div
@@ -27,9 +27,10 @@ const Landing1 = () => (
           margin: "50px",
           fontSize: "20px",
           fontFamily: "Bookman",
+          marginTop:'40px'
         }}
       >
-        <p style={{ textDecoration: "underline" }}>
+        <p style={{ textDecoration: "underline", fontSize:'25px' }}>
           Why did we start this project?{" "}
         </p>
         <p>
@@ -70,7 +71,7 @@ const Landing2 = () => (
         float: "left",
         height: "200px",
         margin: "5px",
-        textAlign: "right",
+        textAlign: "right"
       }}
     >
       <img
@@ -95,9 +96,10 @@ const Landing2 = () => (
           margin: "0px",
           fontSize: "20px",
           fontFamily: "Bookman",
+          marginTop:'10px'
         }}
       >
-        <p style={{ textDecoration: "underline" }}>Our Services </p>
+        <p style={{ textDecoration: "underline",fontSize:'25px'}}>Our Services </p>
         <ul>
           <li>
             Receive students' matriculation card number and picture proof of
@@ -126,9 +128,10 @@ const Landing3 = () => (
           margin: "20px",
           fontSize: "20px",
           fontFamily: "Bookman",
+          marginTop:'50px'
         }}
       >
-        <p style={{ textDecoration: "underline" }}>Contact Us on Telegram</p>
+        <p style={{ textDecoration: "underline", fontSize:'25px' }}>Contact Us on Telegram</p>
         <p style={{ fontStyle: "italic" }}>Lim Jia Yi: @jiayi_i </p>
         <p style={{ fontStyle: "italic" }}>Wiline Tan: @wiline </p>
       </h2>
