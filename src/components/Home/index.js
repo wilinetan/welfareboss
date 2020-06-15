@@ -4,7 +4,8 @@ import {
   withAuthorization,
   withEmailVerification,
 } from "../Session";
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer } from "mdbreact";
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardGroup, MDBContainer,MDBInput } from "mdbreact";
+
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
 
@@ -12,22 +13,30 @@ const HomePage = () => {
   return (
   <div>
     <QueueInfo />
+    <br clear="all" />
+    <br clear="all" />
+    <QueueList />
   </div>
   );
   };
 
 
-// const HomePage = () => (
-//   <AuthUserContext.Consumer>
-//     {(authUser) => (
-//       <div>
-//         <h1>Queue Details</h1>
-//         <QueueInfo />
-//       </div>
-//     )}
-//   </AuthUserContext.Consumer>
-// );
 
+
+
+// const InputPage = () => {
+//   return (
+//     <div>
+//       <div class="custom-control custom-checkbox">
+//         <input type="checkbox" class="custom-control-input" id="defaultUncheckedDisabled2" indeterminate></input>
+//         <label class="custom-control-label" for="defaultUncheckedDisabled2">Default unchecked disabled</label>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+// part 1: for the queue details
 class QueueDetails extends Component {
   constructor(props) {
     super(props);
@@ -104,6 +113,60 @@ class QueueDetails extends Component {
 }
 
 const QueueInfo = withFirebase(QueueDetails) 
+
+// part 2: checklist 
+class QueueListBase extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: false,
+      queueppl:[]
+    };
+  }
+  
+  componentDidMount() {
+    this.setState({ loading: true });
+
+    this.props.firebase.db
+      .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/ids")
+      .on("value", (snapshot) => {
+        var details = snapshot.val();
+        console.log("details", details);
+
+        this.setState({
+          loading: false,
+          queueppl: [details['365224159'].name, ', ', details['365224159'].matric] ,
+        });
+      });
+  }
+
+  render() {
+    const { loading, queueppl} = this.state;
+    return (
+      <div>
+        {loading ? (
+          "Loading details"
+        ) : (
+          <React.Fragment>
+          <div>
+          <header>Queue List</header>
+          <div class="custom-control custom-checkbox" >
+            <input type="checkbox" class="custom-control-input" id="defaultUncheckedDisabled2" indeterminate></input>
+            <label class="custom-control-label" for="defaultUncheckedDisabled2">{queueppl}</label>
+          </div>
+          </div>
+          </React.Fragment>
+        )}
+      </div>
+    );
+  }
+}
+
+const QueueList = withFirebase(QueueListBase) 
+
+
+
 
 const condition = (authUser) => !!authUser;
 

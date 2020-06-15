@@ -15,7 +15,7 @@ class SignOutButton extends Component {
   render() {
     const { history, firebase } = this.props;
     return (
-      <button type="button" onClick={() => this.handleClick(firebase, history)}>
+      <button type="button" style={{color:'rgba(253, 153, 153)', backgroundColor:'black',borderBlockColor:'white'}}onClick={() => this.handleClick(firebase, history)}>
         Sign Out
       </button>
     );
@@ -23,3 +23,4 @@ class SignOutButton extends Component {
 }
  
 export default compose(withRouter, withFirebase)(SignOutButton);
+
