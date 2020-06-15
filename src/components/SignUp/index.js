@@ -258,6 +258,7 @@ class SignUpFormBase extends Component {
               onChange={this.onDateChange}
               value={dateRange}
               required={true}
+              clearIcon={null}
             />
           </Form.Group>
         </Form.Group>
@@ -272,6 +273,7 @@ class SignUpFormBase extends Component {
               disableClock={true}
               maxDetail="minute"
               required={true}
+              clearIcon={null}
             />
             <Form.Text>
               {invalidTime ? (
