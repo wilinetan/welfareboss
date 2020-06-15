@@ -19,7 +19,7 @@ import QueueList from "../QueueList";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="queueinfo">
       <QueueInfo />
       <QueueList />
     </div>
@@ -69,7 +69,7 @@ class QueueDetails extends Component {
   render() {
     const { loading, currServing, currQueueNum, left } = this.state;
     return (
-      <div>
+      <div className="dashboard">
         {loading && <div>Loading ...</div>}
 
         <Dashboard
@@ -84,32 +84,30 @@ class QueueDetails extends Component {
 }
 
 const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
-  <React.Fragment>
-    <div className="text-center">
-      <MDBContainer>
-        <MDBCardGroup>
-          <MDBCard>
-            <MDBCardBody>
-              <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
-              <MDBCardText tag="h2">{currServing}</MDBCardText>
-            </MDBCardBody>
-          </MDBCard>
-          <MDBCard>
-            <MDBCardBody>
-              <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
-              <MDBCardText tag="h2">{currQueueNum}</MDBCardText>
-            </MDBCardBody>
-          </MDBCard>
-          <MDBCard>
-            <MDBCardBody>
-              <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
-              <MDBCardText tag="h2">{left}</MDBCardText>
-            </MDBCardBody>
-          </MDBCard>
-        </MDBCardGroup>
-      </MDBContainer>
-    </div>
-  </React.Fragment>
+  <div className="text-center">
+    <MDBContainer>
+      <MDBCardGroup>
+        <MDBCard>
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
+            <MDBCardText tag="h2">{currServing}</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+        <MDBCard>
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
+            <MDBCardText tag="h2">{currQueueNum}</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+        <MDBCard>
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
+            <MDBCardText tag="h2">{left}</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+      </MDBCardGroup>
+    </MDBContainer>
+  </div>
 );
 
 const QueueInfo = withFirebase(QueueDetails);

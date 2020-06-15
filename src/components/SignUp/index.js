@@ -9,6 +9,7 @@ import UploadExcel from "../UploadExcel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import Alert from "react-bootstrap/Alert";
 
 const SignUpPage = () => (
   <div style={{ paddingLeft: "80px", paddingRight: "80px" }}>
@@ -217,7 +218,11 @@ class SignUpFormBase extends Component {
           Sign Up
         </Button>
 
-        {error && <p>{error.message}</p>}
+        {error && (
+          <Alert variant="danger" style={{ marginTop: "10px" }}>
+            {error.message}
+          </Alert>
+        )}
       </Form>
     );
   }
