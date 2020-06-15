@@ -30,11 +30,5 @@ class SignOutButton extends Component {
     );
   }
 }
-<<<<<<< HEAD
- 
-export default compose(withRouter, withFirebase)(SignOutButton);
-
-=======
 
 export default compose(withRouter, withFirebase)(SignOutButton);
->>>>>>> 3f0bce4aa69b793ee000a0398cd6aadbd8952973
