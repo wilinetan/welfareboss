@@ -13,13 +13,21 @@ import PasswordChangeForm from "../PasswordChange";
 const AccountPage = () => (
   <AuthUserContext.Consumer>
     {(authUser) => (
-      <div>
-        <h1>Account details</h1>
-        <p>Name: {authUser.displayName}</p>
-        <p>Email: {authUser.email}</p>
-        <AccountInfo authUser={authUser} />
-        <PasswordForgetForm />
-        <PasswordChangeForm />
+      <div class='container' style={{border:'solid',fontFamily:'system-ui'}}>
+          <h2 style={{marginTop:'20px',borderBottom:'solid', marginBottom:'30px' }}>My Account</h2>
+          <div class="row" style={{marginBottom:'20px', fontSize:'18px'}}>
+            <div class="col-4" >Name: {authUser.displayName}</div>
+            <div class="col-4" >Email: {authUser.email}</div>
+          </div>
+          <div class='row' style={{marginBottom:'20px', fontSize:'18px'}}>
+            <div class='col'><AccountInfo authUser={authUser} /></div>
+          </div>
+          <div class='row' style={{marginBottom:'20px', fontSize:'18px', marginLeft:'3px'}}>
+            <PasswordForgetForm />
+          </div>
+          <div class='row' style={{marginBottom:'20px', fontSize:'18px', marginLeft:'3px'}}>
+          <PasswordChangeForm />
+          </div>
       </div>
     )}
   </AuthUserContext.Consumer>
@@ -57,9 +65,20 @@ class AccountDetails extends Component {
 
     return (
       <div>
-        {loading && <div>Loading ...</div>}
-
-        <DbInfo faculty={faculty} url={url} />
+        {loading ? (
+          " Loading details..."
+        ) : (
+          <React.Fragment>
+            <div class="row" style={{marginBottom:'12px', fontSize:'18px'}}>
+            <div class="col-4" >Faculty: {faculty}</div>
+            <div class="col-4" >Excel file:{" "}
+              <a target="_blank" rel="noopener noreferrer" href={url}>
+                {" "}
+                Download excel file
+              </a>{" "}</div>
+          </div>
+          </React.Fragment>
+        )}
       </div>
     );
   }
