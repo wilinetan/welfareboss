@@ -40,8 +40,6 @@ app.post("/signup/:id", (req, res) => {
     const script = google.script("v1");
     const fileurl = req.body.file;
 
-    console.log("scriptId", scriptId);
-
     // Make the API request. The request object is included here as 'resource'.
     script.scripts.run(
       {
