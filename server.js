@@ -7,6 +7,9 @@ const fs = require("fs");
 const readline = require("readline");
 const { google } = require("googleapis");
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
@@ -36,6 +39,8 @@ app.post("/signup/:id", (req, res) => {
     const scriptId = process.env.APPS_SCRIPT_ID;
     const script = google.script("v1");
     const fileurl = req.body.file;
+
+    console.log("scriptId", scriptId);
 
     // Make the API request. The request object is included here as 'resource'.
     script.scripts.run(
@@ -95,7 +100,6 @@ app.post("/signup/:id", (req, res) => {
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(credentials, callback) {
-  console.log("authorise");
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
