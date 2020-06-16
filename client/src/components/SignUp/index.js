@@ -306,7 +306,7 @@ class SignUpFormBase extends Component {
         </Form.Group>
 
         <Form.Group controlId="venue">
-          <Form.Label>Venue</Form.Label>
+          <Form.Label>Collection Venue</Form.Label>
           <Form.Control
             name="venue"
             value={venue}
@@ -318,7 +318,7 @@ class SignUpFormBase extends Component {
         </Form.Group>
 
         <Form.Group controlId="facultylink">
-          <Form.Label>Faculty survey link</Form.Label>
+          <Form.Label>Faculty Survey Link</Form.Label>
           <Form.Control
             name="facultyLink"
             value={facultyLink}
@@ -330,7 +330,7 @@ class SignUpFormBase extends Component {
         </Form.Group>
 
         <Form.Group controlId="nussulink">
-          <Form.Label>NUSSU survey link</Form.Label>
+          <Form.Label>NUSSU Survey Link</Form.Label>
           <Form.Control
             name="nussuLink"
             value={nussuLink}
@@ -341,8 +341,12 @@ class SignUpFormBase extends Component {
           />
         </Form.Group>
 
-        <Form.Group required onChange={this.onFileChange}>
-          <Form.File id="exampleFormControlFile1" label="Upload Excel File" />
+        <Form.Group onChange={this.onFileChange}>
+          <Form.File
+            id="exampleFormControlFile1"
+            label="Upload Excel File"
+            required
+          />
         </Form.Group>
 
         <Button
