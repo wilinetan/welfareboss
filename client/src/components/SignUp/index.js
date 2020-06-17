@@ -95,6 +95,16 @@ class SignUpFormBase extends Component {
                 this.props.firebase.user(authUser.user.uid).update({
                   spreadsheetid,
                 });
+                // Update Computing collection with admin details
+                this.props.firebase.db.ref("Computing/admin").set({
+                  starttime: startTime,
+                  endtime: endTime,
+                  startdate: startDate,
+                  enddate: endDate,
+                  venue,
+                  facultylink: facultyLink,
+                  surveylink: surveyLink,
+                });
               }
             );
           });
