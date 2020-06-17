@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Open Sans", "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: black;
+}
+
+code {
+  font-family: "Open Sans", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+}
+
+.nav {
+
+  background: rgba(0, 0, 0);
+  padding: 2px;
+  text-align: right;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  vertical-align: bottom;
+}
+
+.links {
+  display: inline-block;
+  padding: 2px;
+  text-align: right;
+  color: pink;
+  vertical-align:bottom;
+  font-size: '18px';
+}
+
+.links li {
+  display: inline-block;
+  font-size: 16px;
+  text-align: center;
+  padding: 2px;
+  color: black;
+  vertical-align: middle;
+  margin-top: 28px;
+  margin-left: 14px;
+}
+
+.MDBCardText {
+  font-size: 100px;
+}
