@@ -68,6 +68,10 @@ class Firebase {
       }
     });
 
+  // *** Database Root API ***
+
+  root = () => this.db.ref();
+
   // *** User Database API ***
 
   user = (uid) => this.db.ref(`users/${uid}`);
@@ -82,6 +86,16 @@ class Firebase {
   userStorage = (uid) => this.storage.ref(`users/${uid}`);
 
   usersStorage = () => this.storage.ref("users");
+
+  // *** Telebot Database API ***
+
+  teleIds = () => this.db.ref("Computing/ids");
+
+  teleUser = (teleid) => this.db.ref(`Computing/ids/${teleid}`);
+
+  queueDetails = () => this.db.ref("Computing/queueDetails");
+
+  adminDetails = () => this.db.ref("Computing/admin");
 }
 
 export default Firebase;
