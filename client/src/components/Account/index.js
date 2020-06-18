@@ -76,23 +76,21 @@ class AccountDetails extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.props.firebase
-      .user(this.props.authUser.uid)
-      .once("value", (snapshot) => {
-        var details = snapshot.val();
+    this.props.firebase.adminDetails().once("value", (snapshot) => {
+      var details = snapshot.val();
 
-        this.setState({
-          loading: false,
-          url: details.file,
-          startDate: details.startDate,
-          endDate: details.endDate,
-          startTime: details.startTime,
-          endTime: details.endTime,
-          venue: details.venue,
-          nussuLink: details.nussuLink,
-          facultyLink: details.facultyLink,
-        });
+      this.setState({
+        loading: false,
+        url: details.file,
+        startDate: details.startdate,
+        endDate: details.enddate,
+        startTime: details.starttime,
+        endTime: details.endtime,
+        venue: details.venue,
+        nussuLink: details.nussulink,
+        facultyLink: details.facultylink,
       });
+    });
   }
 
   render() {
