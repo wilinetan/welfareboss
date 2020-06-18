@@ -68,6 +68,10 @@ class Firebase {
       }
     });
 
+  // *** Database Root API ***
+
+  root = () => this.db.ref();
+
   // *** User Database API ***
 
   user = (uid) => this.db.ref(`users/${uid}`);

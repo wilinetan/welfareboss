@@ -21,7 +21,7 @@ const SignUpPage = () => (
 
 const INITIAL_STATE = {
   name: "",
-  nusnetid: "",
+  nusnetId: "",
   passwordOne: "",
   passwordTwo: "",
   venue: "",
@@ -35,6 +35,7 @@ const INITIAL_STATE = {
   endTime: "00:00",
   file: null,
   error: null,
+  hasData: false,
 };
 
 class SignUpFormBase extends Component {
@@ -44,10 +45,20 @@ class SignUpFormBase extends Component {
     this.state = { ...INITIAL_STATE };
   }
 
+  componentDidMount() {
+    this.props.firebase.root().once("value", (snapshot) => {
+      const hasData = snapshot.hasChild("Computing");
+      console.log("hasData", hasData);
+      this.setState({
+        hasData,
+      });
+    });
+  }
+
   onSubmit = (event) => {
     const {
       name,
-      nusnetid,
+      nusnetId,
       passwordOne,
       file,
       startTime,
@@ -57,68 +68,78 @@ class SignUpFormBase extends Component {
       facultyLink,
       nussuLink,
       venue,
+      hasData,
     } = this.state;
 
-    const email = nusnetid.concat("@u.nus.edu");
+    const email = nusnetId.concat("@u.nus.edu");
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then((authUser) => {
         // Update user profile
         this.props.firebase.doUpdateProfile(name);
 
-        // Upload file to Firebase storage
-        var uploadFile = this.props.firebase
-          .userStorage(authUser.user.uid)
-          .child(file.name)
-          .put(file);
+        // Ensure that collection details is only set up once
+        if (!hasData) {
+          // Upload file to Firebase storage
+          var uploadFile = this.props.firebase
+            .userStorage(authUser.user.uid)
+            .child(file.name)
+            .put(file);
 
-        // Create user in the Firebase realtime database
-        uploadFile.then((snapshot) => {
-          snapshot.ref.getDownloadURL().then((url) => {
-            this.props.firebase.user(authUser.user.uid).set({
-              name,
-              email,
-              file: url,
-              startDate,
-              endDate,
-              startTime,
-              endTime,
-              facultyLink,
-              nussuLink,
-              venue,
+          // Create user in the Firebase realtime database
+          uploadFile.then((snapshot) => {
+            snapshot.ref.getDownloadURL().then((url) => {
+              this.props.firebase.user(authUser.user.uid).set({
+                name,
+                email,
+                file: url,
+                startDate,
+                endDate,
+                startTime,
+                endTime,
+                facultyLink,
+                nussuLink,
+                venue,
+              });
+
+              // Sync excel data to Firebase realtime database
+              this.syncToFirebase(authUser.user.uid, url).then(
+                (spreadsheetid) => {
+                  console.log("promise done!", spreadsheetid);
+                  this.props.firebase.user(authUser.user.uid).update({
+                    spreadsheetid,
+                  });
+
+                  // Update Computing collection with admin details
+                  this.props.firebase.adminDetails().set({
+                    starttime: startTime,
+                    endtime: endTime,
+                    startdate: startDate,
+                    enddate: endDate,
+                    venue,
+                    facultylink: facultyLink,
+                    nussulink: nussuLink,
+                  });
+
+                  // Update queueDetails
+                  this.props.firebase.queueDetails().set({
+                    currQueueNum: 0,
+                    currServing: 0,
+                  });
+
+                  // Create ids ref
+                  this.props.firebase.teleIds().push();
+                }
+              );
             });
-
-            // Sync excel data to Firebase realtime database
-            this.syncToFirebase(authUser.user.uid, url).then(
-              (spreadsheetid) => {
-                console.log("promise done!", spreadsheetid);
-                this.props.firebase.user(authUser.user.uid).update({
-                  spreadsheetid,
-                });
-
-                // Update Computing collection with admin details
-                this.props.firebase.adminDetails().set({
-                  starttime: startTime,
-                  endtime: endTime,
-                  startdate: startDate,
-                  enddate: endDate,
-                  venue,
-                  facultylink: facultyLink,
-                  nussulink: nussuLink,
-                });
-
-                // Update queueDetails
-                this.props.firebase.queueDetails().set({
-                  currQueueNum: 0,
-                  currServing: 0,
-                });
-
-                // Create ids ref
-                this.props.firebase.teleIds().push();
-              }
-            );
           });
-        });
+        } else {
+          // Create user in the Firebase realtime database
+          this.props.firebase.user(authUser.user.uid).set({
+            name,
+            email,
+          });
+        }
       })
       .then(() => {
         return this.props.firebase.doSendEmailVerification();
@@ -189,7 +210,7 @@ class SignUpFormBase extends Component {
   render() {
     const {
       name,
-      nusnetid,
+      nusnetId,
       passwordOne,
       passwordTwo,
       venue,
@@ -200,15 +221,16 @@ class SignUpFormBase extends Component {
       startTime,
       endTime,
       error,
+      hasData,
     } = this.state;
 
     const invalidId =
-      nusnetid !== ""
-        ? nusnetid.length !== 8 || nusnetid.charAt(0).toUpperCase() !== "E"
+      nusnetId !== ""
+        ? nusnetId.length !== 8 || nusnetId.charAt(0).toUpperCase() !== "E"
         : false;
 
     const validId =
-      nusnetid.length === 8 && nusnetid.charAt(0).toUpperCase() === "E";
+      nusnetId.length === 8 && nusnetId.charAt(0).toUpperCase() === "E";
 
     const invalidPassword =
       passwordOne === "" || passwordTwo === ""
@@ -236,8 +258,8 @@ class SignUpFormBase extends Component {
           <InputGroup className="email">
             <Form.Control
               placeholder="NUSNET ID"
-              name="nusnetid"
-              value={nusnetid}
+              name="nusnetId"
+              value={nusnetId}
               aria-label="NUSNET ID"
               aria-describedby="basic-addon2"
               onChange={this.onChange}
@@ -285,94 +307,99 @@ class SignUpFormBase extends Component {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Collection Dates</Form.Label>
-          <Form.Group>
-            <DateRangePicker
-              onChange={this.onDateChange}
-              value={dateRange}
-              required={true}
-              clearIcon={null}
-            />
-          </Form.Group>
-        </Form.Group>
+        {!hasData && (
+          <React.Fragment>
+            <Form.Group>
+              <Form.Label>Collection Dates</Form.Label>
+              <Form.Group>
+                <DateRangePicker
+                  onChange={this.onDateChange}
+                  value={dateRange}
+                  required={true}
+                  clearIcon={null}
+                  disabled={hasData}
+                />
+              </Form.Group>
+            </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Collection Time</Form.Label>
-          <Form.Group>
-            <TimeRangePicker
-              onChange={this.onTimeChange}
-              value={timeRange}
-              format="hh:mm a"
-              disableClock={true}
-              maxDetail="minute"
-              required={true}
-              clearIcon={null}
-            />
-            <Form.Text>
-              {invalidTime ? (
-                timeRange[0] === "00:00" && timeRange[1] === "00:00" ? (
-                  ""
-                ) : (
-                  <p style={{ color: "red" }}>
-                    Please input a valid time range.
-                  </p>
-                )
-              ) : (
-                <p style={{ color: "green" }}>Great!</p>
-              )}
-            </Form.Text>
-          </Form.Group>
-        </Form.Group>
+            <Form.Group>
+              <Form.Label>Collection Time</Form.Label>
+              <Form.Group>
+                <TimeRangePicker
+                  onChange={this.onTimeChange}
+                  value={timeRange}
+                  format="hh:mm a"
+                  disableClock={true}
+                  maxDetail="minute"
+                  required={true}
+                  clearIcon={null}
+                />
+                <Form.Text>
+                  {invalidTime ? (
+                    timeRange[0] === "00:00" && timeRange[1] === "00:00" ? (
+                      ""
+                    ) : (
+                      <p style={{ color: "red" }}>
+                        Please input a valid time range.
+                      </p>
+                    )
+                  ) : (
+                    <p style={{ color: "green" }}>Great!</p>
+                  )}
+                </Form.Text>
+              </Form.Group>
+            </Form.Group>
 
-        <Form.Group controlId="venue">
-          <Form.Label>Collection Venue</Form.Label>
-          <Form.Control
-            name="venue"
-            value={venue}
-            type="text"
-            placeholder="Enter collection venue"
-            onChange={this.onChange}
-            required
-          />
-        </Form.Group>
+            <Form.Group controlId="venue">
+              <Form.Label>Collection Venue</Form.Label>
+              <Form.Control
+                name="venue"
+                value={venue}
+                type="text"
+                placeholder="Enter collection venue"
+                onChange={this.onChange}
+                required
+              />
+            </Form.Group>
 
-        <Form.Group controlId="facultylink">
-          <Form.Label>Faculty Survey Link</Form.Label>
-          <Form.Control
-            name="facultyLink"
-            value={facultyLink}
-            type="text"
-            placeholder="Enter Faculty survey link"
-            onChange={this.onChange}
-            required
-          />
-        </Form.Group>
+            <Form.Group controlId="facultylink">
+              <Form.Label>Faculty Survey Link</Form.Label>
+              <Form.Control
+                name="facultyLink"
+                value={facultyLink}
+                type="text"
+                placeholder="Enter Faculty survey link"
+                onChange={this.onChange}
+                required
+              />
+            </Form.Group>
 
-        <Form.Group controlId="nussulink">
-          <Form.Label>NUSSU Survey Link</Form.Label>
-          <Form.Control
-            name="nussuLink"
-            value={nussuLink}
-            type="text"
-            placeholder="Enter NUSSU survey link"
-            onChange={this.onChange}
-            required
-          />
-        </Form.Group>
+            <Form.Group controlId="nussulink">
+              <Form.Label>NUSSU Survey Link</Form.Label>
+              <Form.Control
+                name="nussuLink"
+                value={nussuLink}
+                type="text"
+                placeholder="Enter NUSSU survey link"
+                onChange={this.onChange}
+                required
+              />
+            </Form.Group>
 
-        <Form.Group onChange={this.onFileChange}>
-          <Form.File
-            id="exampleFormControlFile1"
-            label="Upload Excel File"
-            required
-          />
-        </Form.Group>
+            <Form.Group onChange={this.onFileChange}>
+              <Form.File
+                id="exampleFormControlFile1"
+                label="Upload Excel File"
+                required
+              />
+            </Form.Group>
+          </React.Fragment>
+        )}
 
         <Button
           variant="primary"
           type="submit"
-          disabled={invalidPassword || invalidId || invalidTime}
+          disabled={invalidPassword || invalidId || (!hasData && invalidTime)}
         >
           Sign Up
         </Button>
