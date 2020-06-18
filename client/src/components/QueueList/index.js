@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 
-// import QueueItem from "../QueueItem";
 import { withFirebase } from "../Firebase";
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
+import StudentList from "../StudentList";
 
 class QueueList extends Component {
   constructor(props) {
@@ -18,9 +16,8 @@ class QueueList extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.props.firebase.db
-      .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/ids")
-      .on("value", (snapshot) => {
+    this.props.firebase.teleIds().on("value", (snapshot) => {
+      if (snapshot.hasChildren()) {
         const usersObject = snapshot.val();
 
         const queueList = Object.keys(usersObject).map((key) => ({
@@ -31,117 +28,101 @@ class QueueList extends Component {
           students: queueList,
           loading: false,
         });
-      });
+      } else {
+        this.setState({
+          loading: false,
+        });
+      }
+    });
   }
 
   componentWillUnmount() {
-    this.props.firebase.db
-      .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/ids")
-      .off();
+    this.props.firebase.teleIds().off();
   }
 
   markCollect = (teleid) => {
-    console.log("teleid", teleid);
+    this.props.firebase.teleUser(teleid).once("value", (snapshot) => {
+      const details = snapshot.val();
+      const isCollected = details.collected;
 
-    this.props.firebase.db
-      .ref(
-        `14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/ids/${teleid}/collected`
-      )
-      .once("value", (snapshot) => {
-        const isCollected = snapshot.val();
-        this.props.firebase.db
-          .ref(`14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/ids/${teleid}`)
-          .update({
-            collected: !isCollected,
-          });
+      this.props.firebase.teleUser(teleid).update({
+        collected: !isCollected,
       });
 
-    this.props.firebase.db
-      .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/ids")
-      .on("value", (snapshot) => {
-        const usersObject = snapshot.val();
+      this.props.firebase
+        .queueDetails()
+        .child("currServing")
+        .once("value", (snapshot) => {
+          const currServing = snapshot.val();
 
-        const queueList = Object.keys(usersObject).map((key) => ({
-          ...usersObject[key],
-        }));
+          this.props.firebase.queueDetails().update({
+            currServing: Math.max(details.queueNum, currServing),
+          });
+        });
+    });
 
-        this.setState({
-          students: queueList,
-          loading: false,
+    this.props.firebase.teleIds().on("value", (snapshot) => {
+      const usersObject = snapshot.val();
+
+      const queueList = Object.keys(usersObject).map((key) => ({
+        ...usersObject[key],
+      }));
+
+      this.setState({
+        students: queueList,
+        loading: false,
+      });
+    });
+  };
+
+  checkVerified = (teleid) => {
+    this.props.firebase
+      .teleUser(teleid)
+      .child("surveyVerified")
+      .once("value", (snapshot) => {
+        const isVerified = snapshot.val();
+        this.props.firebase.teleUser(teleid).update({
+          surveyVerified: !isVerified,
         });
       });
+
+    this.props.firebase.teleIds().on("value", (snapshot) => {
+      const usersObject = snapshot.val();
+
+      const queueList = Object.keys(usersObject).map((key) => ({
+        ...usersObject[key],
+      }));
+
+      this.setState({
+        students: queueList,
+        loading: false,
+      });
+    });
   };
 
   render() {
     const { students, loading } = this.state;
 
     return (
-      <div className="queuelist-container" style={{ margin: "20px" }}>
+      <div
+        className="queuelist-container"
+        style={{ margin: "20px", textAlign: "center" }}
+      >
         <h1>Queue List</h1>
         {loading && <div>Loading ...</div>}
 
-        <StudentList students={students} markCollect={this.markCollect} />
+        {students.length === 0 ? (
+          <p style={{ fontSize: "25px" }}>Currently no students in the queue</p>
+        ) : (
+          <StudentList
+            students={students}
+            markCollect={this.markCollect}
+            checkVerified={this.checkVerified}
+          />
+        )}
       </div>
     );
   }
 }
-
-const StudentList = ({ students, markCollect }) => (
-  <Table bordered hover size="sm" style={{ width: "1200px" }}>
-    <thead>
-      <tr>
-        <th>Queue Number</th>
-        <th>Name</th>
-        <th>Matric Number</th>
-        <th>Faculty survey</th>
-        <th>NUSSU survey</th>
-        <th>Collected</th>
-        <th>Checkbox</th>
-      </tr>
-    </thead>
-    <tbody>
-      {students.sort(studentComparator).map((student) => (
-        <tr
-          key={student.teleid}
-          style={{
-            background: student.collected ? "grey" : "white",
-          }}
-        >
-          <td>{student.queueNum}</td>
-          <td>{student.name}</td>
-          <td>{student.matric}</td>
-          <td>
-            <a target="_blank" rel="noopener noreferrer" href={student.faculty}>
-              {" "}
-              Faculty
-            </a>
-          </td>
-          <td>
-            <a target="_blank" rel="noopener noreferrer" href={student.nussu}>
-              {" "}
-              NUSSU
-            </a>
-          </td>
-          <td>{student.collected.toString()}</td>
-          <td>
-            <Form.Check
-              id={student.teleid}
-              type="checkbox"
-              onClick={() => markCollect(student.teleid)}
-            />
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-);
-
-const studentComparator = (student1, student2) => {
-  return student1.collected === student2.collected
-    ? student1.queueNum - student2.queueNum
-    : student1.collected
-    ? 1
-    : -1;
-};
 
 export default withFirebase(QueueList);

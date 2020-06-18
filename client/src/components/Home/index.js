@@ -52,18 +52,16 @@ class QueueDetails extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.props.firebase.db
-      .ref("14MeO__j9jCngVkWmjCB4H4HetHmfE15V8fJNnTVAaXQ/queueDetails")
-      .on("value", (snapshot) => {
-        var details = snapshot.val();
+    this.props.firebase.queueDetails().on("value", (snapshot) => {
+      var details = snapshot.val();
 
-        this.setState({
-          loading: false,
-          currServing: details.currServing,
-          currQueueNum: details.currQueueNum,
-          left: details.currQueueNum - details.currServing,
-        });
+      this.setState({
+        loading: false,
+        currServing: details.currServing,
+        currQueueNum: details.currQueueNum,
+        left: details.currQueueNum - details.currServing,
       });
+    });
   }
 
   render() {
