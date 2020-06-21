@@ -1,29 +1,29 @@
 import React, { Component } from "react";
 import {
-  // eslint-disable-next-line
-  AuthUserContext,
-  withAuthorization,
-  withEmailVerification,
+	// eslint-disable-next-line
+	AuthUserContext,
+	withAuthorization,
+	withEmailVerification,
 } from "../Session";
 import {
-  MDBCard,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardGroup,
-  MDBContainer,
+	MDBCard,
+	MDBCardBody,
+	MDBCardTitle,
+	MDBCardText,
+	MDBCardGroup,
+	MDBContainer,
 } from "mdbreact";
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
 import QueueList from "../QueueList";
 
 const HomePage = () => {
-  return (
-    <div className="queueinfo">
-      <QueueInfo />
-      <QueueList />
-    </div>
-  );
+	return (
+		<div className="queueinfo">
+			<QueueInfo />
+			<QueueList />
+		</div>
+	);
 };
 
 // const HomePage = () => (
@@ -38,74 +38,74 @@ const HomePage = () => {
 // );
 
 class QueueDetails extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.state = {
-      loading: false,
-      currServing: 0,
-      currQueueNum: 0,
-      left: 0,
-    };
-  }
+		this.state = {
+			loading: false,
+			currServing: 0,
+			currQueueNum: 0,
+			left: 0,
+		};
+	}
 
-  componentDidMount() {
-    this.setState({ loading: true });
+	componentDidMount() {
+		this.setState({ loading: true });
 
-    this.props.firebase.queueDetails().on("value", (snapshot) => {
-      var details = snapshot.val();
+		this.props.firebase.queueDetails().on("value", (snapshot) => {
+			var details = snapshot.val();
 
-      this.setState({
-        loading: false,
-        currServing: details.currServing,
-        currQueueNum: details.currQueueNum,
-        left: details.currQueueNum - details.currServing,
-      });
-    });
-  }
+			this.setState({
+				loading: false,
+				currServing: details.currServing,
+				currQueueNum: details.currQueueNum,
+				left: details.currQueueNum - details.currServing,
+			});
+		});
+	}
 
-  render() {
-    const { loading, currServing, currQueueNum, left } = this.state;
-    return (
-      <div className="dashboard">
-        {loading && <div>Loading ...</div>}
+	render() {
+		const { loading, currServing, currQueueNum, left } = this.state;
+		return (
+			<div className="dashboard">
+				{loading && <div>Loading ...</div>}
 
-        <Dashboard
-          loading={loading}
-          currServing={currServing}
-          currQueueNum={currQueueNum}
-          left={left}
-        />
-      </div>
-    );
-  }
+				<Dashboard
+					loading={loading}
+					currServing={currServing}
+					currQueueNum={currQueueNum}
+					left={left}
+				/>
+			</div>
+		);
+	}
 }
 
 const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
-  <div className="text-center">
-    <MDBContainer>
-      <MDBCardGroup>
-        <MDBCard>
-          <MDBCardBody>
-            <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
-            <MDBCardText tag="h2">{currServing}</MDBCardText>
-          </MDBCardBody>
-        </MDBCard>
-        <MDBCard>
-          <MDBCardBody>
-            <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
-            <MDBCardText tag="h2">{currQueueNum}</MDBCardText>
-          </MDBCardBody>
-        </MDBCard>
-        <MDBCard>
-          <MDBCardBody>
-            <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
-            <MDBCardText tag="h2">{left}</MDBCardText>
-          </MDBCardBody>
-        </MDBCard>
-      </MDBCardGroup>
-    </MDBContainer>
-  </div>
+	<div className="text-center">
+		<MDBContainer>
+			<MDBCardGroup>
+				<MDBCard>
+					<MDBCardBody>
+						<MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
+						<MDBCardText tag="h2">{currServing}</MDBCardText>
+					</MDBCardBody>
+				</MDBCard>
+				<MDBCard>
+					<MDBCardBody>
+						<MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
+						<MDBCardText tag="h2">{currQueueNum}</MDBCardText>
+					</MDBCardBody>
+				</MDBCard>
+				<MDBCard>
+					<MDBCardBody>
+						<MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
+						<MDBCardText tag="h2">{left}</MDBCardText>
+					</MDBCardBody>
+				</MDBCard>
+			</MDBCardGroup>
+		</MDBContainer>
+	</div>
 );
 
 const QueueInfo = withFirebase(QueueDetails);
@@ -113,6 +113,6 @@ const QueueInfo = withFirebase(QueueDetails);
 const condition = (authUser) => !!authUser;
 
 export default compose(
-  withEmailVerification,
-  withAuthorization(condition)
+	withEmailVerification,
+	withAuthorization(condition)
 )(HomePage);
