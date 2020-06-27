@@ -48,7 +48,6 @@ class SignUpFormBase extends Component {
   componentDidMount() {
     this.props.firebase.root().once("value", (snapshot) => {
       const hasData = snapshot.hasChild("Computing");
-      console.log("hasData", hasData);
       this.setState({
         hasData,
       });
@@ -105,7 +104,6 @@ class SignUpFormBase extends Component {
               // Sync excel data to Firebase realtime database
               this.syncToFirebase(authUser.user.uid, url).then(
                 (spreadsheetid) => {
-                  console.log("promise done!", spreadsheetid);
                   this.props.firebase.user(authUser.user.uid).update({
                     spreadsheetid,
                   });
@@ -119,6 +117,7 @@ class SignUpFormBase extends Component {
                     venue,
                     facultylink: facultyLink,
                     nussulink: nussuLink,
+                    excelfile: url,
                   });
 
                   // Update queueDetails
@@ -128,7 +127,7 @@ class SignUpFormBase extends Component {
                   });
 
                   // Create ids ref
-                  this.props.firebase.teleIds().push();
+                  // this.props.firebase.teleIds().push();
                 }
               );
             });
@@ -241,7 +240,7 @@ class SignUpFormBase extends Component {
 
     return (
       <Form onSubmit={this.onSubmit}>
-        <Form.Group controlId="formBasicName">
+        <Form.Group controlId="formBasicName" data-test="name-form">
           <Form.Label>Full Name</Form.Label>
           <Form.Control
             name="name"
@@ -253,7 +252,7 @@ class SignUpFormBase extends Component {
           />
         </Form.Group>
 
-        <Form.Group controlId="formEmail">
+        <Form.Group controlId="formEmail" data-test="email-form">
           <Form.Label>NUS email address</Form.Label>
           <InputGroup className="email">
             <Form.Control
@@ -279,7 +278,7 @@ class SignUpFormBase extends Component {
           </InputGroup>
         </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
+        <Form.Group controlId="formBasicPassword" data-test="password-form">
           <Form.Label>Password</Form.Label>
           <Form.Control
             name="passwordOne"
@@ -291,7 +290,10 @@ class SignUpFormBase extends Component {
           />
         </Form.Group>
 
-        <Form.Group controlId="formConfirmPassword">
+        <Form.Group
+          controlId="formConfirmPassword"
+          data-test="confirmpassword-form"
+        >
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             name="passwordTwo"
@@ -309,7 +311,7 @@ class SignUpFormBase extends Component {
 
         {!hasData && (
           <React.Fragment>
-            <Form.Group>
+            <Form.Group data-test="date-form">
               <Form.Label>Collection Dates</Form.Label>
               <Form.Group>
                 <DateRangePicker
@@ -322,7 +324,7 @@ class SignUpFormBase extends Component {
               </Form.Group>
             </Form.Group>
 
-            <Form.Group>
+            <Form.Group data-test="time-form">
               <Form.Label>Collection Time</Form.Label>
               <Form.Group>
                 <TimeRangePicker
@@ -350,7 +352,7 @@ class SignUpFormBase extends Component {
               </Form.Group>
             </Form.Group>
 
-            <Form.Group controlId="venue">
+            <Form.Group controlId="venue" data-test="venue-form">
               <Form.Label>Collection Venue</Form.Label>
               <Form.Control
                 name="venue"
@@ -362,7 +364,7 @@ class SignUpFormBase extends Component {
               />
             </Form.Group>
 
-            <Form.Group controlId="facultylink">
+            <Form.Group controlId="facultylink" data-test="facultylink-form">
               <Form.Label>Faculty Survey Link</Form.Label>
               <Form.Control
                 name="facultyLink"
@@ -374,7 +376,7 @@ class SignUpFormBase extends Component {
               />
             </Form.Group>
 
-            <Form.Group controlId="nussulink">
+            <Form.Group controlId="nussulink" data-test="nussulink-form">
               <Form.Label>NUSSU Survey Link</Form.Label>
               <Form.Control
                 name="nussuLink"
@@ -386,7 +388,10 @@ class SignUpFormBase extends Component {
               />
             </Form.Group>
 
-            <Form.Group onChange={this.onFileChange}>
+            <Form.Group
+              onChange={this.onFileChange}
+              data-test="uploadfile-form"
+            >
               <Form.File
                 id="exampleFormControlFile1"
                 label="Upload Excel File"
@@ -400,6 +405,7 @@ class SignUpFormBase extends Component {
           variant="primary"
           type="submit"
           disabled={invalidPassword || invalidId || (!hasData && invalidTime)}
+          data-test="submitsignupform-btn"
         >
           Sign Up
         </Button>

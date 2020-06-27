@@ -16,6 +16,7 @@ class QueueList extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
+    // Get all the students in the queue if there are students
     this.props.firebase.teleIds().on("value", (snapshot) => {
       if (snapshot.hasChildren()) {
         const usersObject = snapshot.val();
@@ -40,15 +41,18 @@ class QueueList extends Component {
     this.props.firebase.teleIds().off();
   }
 
+  // Indicate student has collected welfare pack
   markCollect = (teleid) => {
     this.props.firebase.teleUser(teleid).once("value", (snapshot) => {
       const details = snapshot.val();
       const isCollected = details.collected;
 
+      // Update student's data as collected
       this.props.firebase.teleUser(teleid).update({
         collected: !isCollected,
       });
 
+      // Update current serving
       this.props.firebase
         .queueDetails()
         .child("currServing")
@@ -61,6 +65,7 @@ class QueueList extends Component {
         });
     });
 
+    // Update the state to reflect new changes
     this.props.firebase.teleIds().on("value", (snapshot) => {
       const usersObject = snapshot.val();
 
@@ -75,7 +80,9 @@ class QueueList extends Component {
     });
   };
 
+  // Indicate that a student's survey photos have been verified
   checkVerified = (teleid) => {
+    // Update student's data to show that surveys have been verified
     this.props.firebase
       .teleUser(teleid)
       .child("surveyVerified")
@@ -86,6 +93,7 @@ class QueueList extends Component {
         });
       });
 
+    // Update the state to reflect new changes
     this.props.firebase.teleIds().on("value", (snapshot) => {
       const usersObject = snapshot.val();
 
@@ -107,6 +115,7 @@ class QueueList extends Component {
       <div
         className="queuelist-container"
         style={{ margin: "20px", textAlign: "center" }}
+        data-test="queuelist"
       >
         <h1>Queue List</h1>
         {loading && <div>Loading ...</div>}
