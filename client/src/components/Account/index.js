@@ -7,7 +7,6 @@ import {
   withEmailVerification,
 } from "../Session";
 import { withFirebase } from "../Firebase";
-import { PasswordForgetForm } from "../PasswordForget";
 import PasswordChangeForm from "../PasswordChange";
 
 const AccountPage = () => (
@@ -43,12 +42,6 @@ const AccountPage = () => (
           className="row"
           style={{ marginBottom: "20px", fontSize: "18px", marginLeft: "3px" }}
         >
-          <PasswordForgetForm />
-        </div>
-        <div
-          className="row"
-          style={{ marginBottom: "20px", fontSize: "18px", marginLeft: "3px" }}
-        >
           <PasswordChangeForm />
         </div>
       </div>
@@ -62,7 +55,7 @@ class AccountDetails extends Component {
 
     this.state = {
       loading: false,
-      url: "",
+      excelFile: "",
       startDate: "",
       endDate: "",
       startTime: "",
@@ -81,7 +74,7 @@ class AccountDetails extends Component {
 
       this.setState({
         loading: false,
-        url: details.file,
+        excelFile: details.excelfile,
         startDate: details.startdate,
         endDate: details.enddate,
         startTime: details.starttime,
@@ -110,7 +103,7 @@ const DbInfo = ({ rest }) => (
     <p>
       Excel file:{" "}
       {
-        <a target="_blank" rel="noopener noreferrer" href={rest.url}>
+        <a target="_blank" rel="noopener noreferrer" href={rest.excelFile}>
           Download excel file
         </a>
       }{" "}
