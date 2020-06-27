@@ -24,40 +24,44 @@ const StudentList = ({ students, markCollect, checkVerified }) => (
       </tr>
     </thead>
     <tbody>
-      {students.sort(studentComparator).map((student) => (
-        <tr
-          key={student.teleid}
-          style={{
-            background: student.collected ? "grey" : "white",
-          }}
-        >
-          <td>{student.queueNum}</td>
-          <td>{student.name}</td>
-          <td>{student.matric}</td>
-          <td>
-            <SurveyImage imageUrl={student.faculty} />
-          </td>
-          <td>
-            <SurveyImage imageUrl={student.nussu} />
-          </td>
-          <td>
-            <Form.Check
-              id={student.teleid}
-              type="checkbox"
-              onChange={() => checkVerified(student.teleid)}
-              checked={student.surveyVerified}
-            />
-          </td>
-          <td>
-            <Form.Check
-              id={student.teleid}
-              type="checkbox"
-              onChange={() => markCollect(student.teleid)}
-              checked={student.collected}
-            />
-          </td>
-        </tr>
-      ))}
+      {students
+        .filter((student) => student.queueNum !== -1)
+        .sort(studentComparator)
+        .map((student) => (
+          <tr
+            key={student.teleid}
+            style={{
+              background: student.collected ? "grey" : "white",
+            }}
+            data-test={"queuelist-" + student.teleid}
+          >
+            <td>{student.queueNum}</td>
+            <td>{student.name}</td>
+            <td>{student.matric}</td>
+            <td data-test={"facultysurvey-" + student.teleid}>
+              <SurveyImage imageUrl={student.faculty} />
+            </td>
+            <td data-test={"nussusurvey-" + student.teleid}>
+              <SurveyImage imageUrl={student.nussu} />
+            </td>
+            <td data-test={"verified-" + student.teleid}>
+              <Form.Check
+                id={student.teleid}
+                type="checkbox"
+                onChange={() => checkVerified(student.teleid)}
+                checked={student.surveyVerified}
+              />
+            </td>
+            <td data-test={"collected-" + student.teleid}>
+              <Form.Check
+                id={student.teleid}
+                type="checkbox"
+                onChange={() => markCollect(student.teleid)}
+                checked={student.collected}
+              />
+            </td>
+          </tr>
+        ))}
     </tbody>
   </Table>
 );

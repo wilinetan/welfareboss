@@ -28,26 +28,26 @@ const Navigation = () => (
 
 const NavigationAuth = () => (
   <ul className="links">
-    <li>
+    <li data-test="landingpage-btn">
       <Link style={linkStyle} to={ROUTES.LANDING}>
         Main
       </Link>
     </li>
-    <li>
+    <li data-test="homepage-btn">
       <Link style={linkStyle} to={ROUTES.HOME}>
         Home
       </Link>
     </li>
-    <li>
+    <li data-test="accountpage-btn">
       <Link style={linkStyle} to={ROUTES.ACCOUNT}>
         Account
       </Link>
     </li>
-    <li>
+    {/* <li data-test="adminpage-btn">
       <Link style={linkStyle} to={ROUTES.ADMIN}>
         Admin
       </Link>
-    </li>
+    </li> */}
     <li>
       <SignOutButton />
     </li>
@@ -56,12 +56,12 @@ const NavigationAuth = () => (
 
 const NavigationNonAuth = () => (
   <ul className="links">
-    <li>
+    <li data-test="landingpage-btn">
       <Link style={linkStyle} to={ROUTES.LANDING}>
         Main
       </Link>
     </li>
-    <li>
+    <li data-test="signinpage-btn">
       <Link style={linkStyle} to={ROUTES.SIGN_IN}>
         Sign In
       </Link>
@@ -71,8 +71,8 @@ const NavigationNonAuth = () => (
 
 const linkStyle = {
   fontFamily: "Bookman bold",
-  color: 'rgba(253, 153, 153)',
-  fontSize:'18px',
+  color: "rgba(253, 153, 153)",
+  fontSize: "18px",
 };
 
 export default Navigation;

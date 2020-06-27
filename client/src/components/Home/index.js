@@ -67,7 +67,7 @@ class QueueDetails extends Component {
   render() {
     const { loading, currServing, currQueueNum, left } = this.state;
     return (
-      <div className="dashboard">
+      <div className="dashboard" data-test="dashboard">
         {loading && <div>Loading ...</div>}
 
         <Dashboard
@@ -92,9 +92,13 @@ const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
           </MDBCardBody>
         </MDBCard>
         <MDBCard>
-          <MDBCardBody>
-            <MDBCardTitle tag="h5">Last Issued Queue Number</MDBCardTitle>
-            <MDBCardText tag="h2">{currQueueNum}</MDBCardText>
+          <MDBCardBody data-test="currQueueNum-card">
+            <MDBCardTitle tag="h5" data-test="currQueueNum-cardtitle">
+              Last Issued Queue Number
+            </MDBCardTitle>
+            <MDBCardText tag="h2" data-test="dashboard-currQueueNum">
+              {currQueueNum}
+            </MDBCardText>
           </MDBCardBody>
         </MDBCard>
         <MDBCard>

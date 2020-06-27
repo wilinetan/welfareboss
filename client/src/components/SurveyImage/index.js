@@ -28,6 +28,7 @@ class SurveyImage extends Component {
             size="sm"
             onClick={this.onClick}
             style={{ width: "70px", padding: "1px", fontSize: "10px" }}
+            data-test="surveyimage-btn"
           >
             {showImage ? "Hide Image" : "Show Image"}
           </Button>
@@ -37,6 +38,7 @@ class SurveyImage extends Component {
             alt=""
             src={this.props.imageUrl}
             style={{ paddingTop: "5px" }}
+            data-test="surveyimage"
           ></img>
         )}
       </div>
