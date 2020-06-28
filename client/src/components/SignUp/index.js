@@ -39,7 +39,6 @@ const INITIAL_STATE = {
 };
 
 class SignUpFormBase extends Component {
-<<<<<<< HEAD
 	constructor(props) {
 		super(props);
 
@@ -49,7 +48,6 @@ class SignUpFormBase extends Component {
 	componentDidMount() {
 		this.props.firebase.root().once("value", (snapshot) => {
 			const hasData = snapshot.hasChild("Computing");
-			console.log("hasData", hasData);
 			this.setState({
 				hasData,
 			});
@@ -106,7 +104,6 @@ class SignUpFormBase extends Component {
 							// Sync excel data to Firebase realtime database
 							this.syncToFirebase(authUser.user.uid, url).then(
 								(spreadsheetid) => {
-									console.log("promise done!", spreadsheetid);
 									this.props.firebase.user(authUser.user.uid).update({
 										spreadsheetid,
 									});
@@ -120,6 +117,7 @@ class SignUpFormBase extends Component {
 										venue,
 										facultylink: facultyLink,
 										nussulink: nussuLink,
+										excelfile: url,
 									});
 
 									// Update queueDetails
@@ -129,7 +127,7 @@ class SignUpFormBase extends Component {
 									});
 
 									// Create ids ref
-									this.props.firebase.teleIds().push();
+									// this.props.firebase.teleIds().push();
 								}
 							);
 						});
@@ -242,7 +240,7 @@ class SignUpFormBase extends Component {
 
 		return (
 			<Form onSubmit={this.onSubmit}>
-				<Form.Group controlId="formBasicName">
+				<Form.Group controlId="formBasicName" data-test="name-form">
 					<Form.Label>Full Name</Form.Label>
 					<Form.Control
 						name="name"
@@ -254,7 +252,7 @@ class SignUpFormBase extends Component {
 					/>
 				</Form.Group>
 
-				<Form.Group controlId="formEmail">
+				<Form.Group controlId="formEmail" data-test="email-form">
 					<Form.Label>NUS email address</Form.Label>
 					<InputGroup className="email">
 						<Form.Control
@@ -280,7 +278,7 @@ class SignUpFormBase extends Component {
 					</InputGroup>
 				</Form.Group>
 
-				<Form.Group controlId="formBasicPassword">
+				<Form.Group controlId="formBasicPassword" data-test="password-form">
 					<Form.Label>Password</Form.Label>
 					<Form.Control
 						name="passwordOne"
@@ -292,7 +290,10 @@ class SignUpFormBase extends Component {
 					/>
 				</Form.Group>
 
-				<Form.Group controlId="formConfirmPassword">
+				<Form.Group
+					controlId="formConfirmPassword"
+					data-test="confirmpassword-form"
+				>
 					<Form.Label>Confirm Password</Form.Label>
 					<Form.Control
 						name="passwordTwo"
@@ -310,7 +311,7 @@ class SignUpFormBase extends Component {
 
 				{!hasData && (
 					<React.Fragment>
-						<Form.Group>
+						<Form.Group data-test="date-form">
 							<Form.Label>Collection Dates</Form.Label>
 							<Form.Group>
 								<DateRangePicker
@@ -323,7 +324,7 @@ class SignUpFormBase extends Component {
 							</Form.Group>
 						</Form.Group>
 
-						<Form.Group>
+						<Form.Group data-test="time-form">
 							<Form.Label>Collection Time</Form.Label>
 							<Form.Group>
 								<TimeRangePicker
@@ -351,7 +352,7 @@ class SignUpFormBase extends Component {
 							</Form.Group>
 						</Form.Group>
 
-						<Form.Group controlId="venue">
+						<Form.Group controlId="venue" data-test="venue-form">
 							<Form.Label>Collection Venue</Form.Label>
 							<Form.Control
 								name="venue"
@@ -363,7 +364,7 @@ class SignUpFormBase extends Component {
 							/>
 						</Form.Group>
 
-						<Form.Group controlId="facultylink">
+						<Form.Group controlId="facultylink" data-test="facultylink-form">
 							<Form.Label>Faculty Survey Link</Form.Label>
 							<Form.Control
 								name="facultyLink"
@@ -375,7 +376,7 @@ class SignUpFormBase extends Component {
 							/>
 						</Form.Group>
 
-						<Form.Group controlId="nussulink">
+						<Form.Group controlId="nussulink" data-test="nussulink-form">
 							<Form.Label>NUSSU Survey Link</Form.Label>
 							<Form.Control
 								name="nussuLink"
@@ -387,7 +388,10 @@ class SignUpFormBase extends Component {
 							/>
 						</Form.Group>
 
-						<Form.Group onChange={this.onFileChange}>
+						<Form.Group
+							onChange={this.onFileChange}
+							data-test="uploadfile-form"
+						>
 							<Form.File
 								id="exampleFormControlFile1"
 								label="Upload Excel File"
@@ -401,6 +405,7 @@ class SignUpFormBase extends Component {
 					variant="primary"
 					type="submit"
 					disabled={invalidPassword || invalidId || (!hasData && invalidTime)}
+					data-test="submitsignupform-btn"
 				>
 					Sign Up
 				</Button>
@@ -413,387 +418,6 @@ class SignUpFormBase extends Component {
 			</Form>
 		);
 	}
-=======
-  constructor(props) {
-    super(props);
-
-    this.state = { ...INITIAL_STATE };
-  }
-
-  componentDidMount() {
-    this.props.firebase.root().once("value", (snapshot) => {
-      const hasData = snapshot.hasChild("Computing");
-      this.setState({
-        hasData,
-      });
-    });
-  }
-
-  onSubmit = (event) => {
-    const {
-      name,
-      nusnetId,
-      passwordOne,
-      file,
-      startTime,
-      endTime,
-      startDate,
-      endDate,
-      facultyLink,
-      nussuLink,
-      venue,
-      hasData,
-    } = this.state;
-
-    const email = nusnetId.concat("@u.nus.edu");
-    this.props.firebase
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then((authUser) => {
-        // Update user profile
-        this.props.firebase.doUpdateProfile(name);
-
-        // Ensure that collection details is only set up once
-        if (!hasData) {
-          // Upload file to Firebase storage
-          var uploadFile = this.props.firebase
-            .userStorage(authUser.user.uid)
-            .child(file.name)
-            .put(file);
-
-          // Create user in the Firebase realtime database
-          uploadFile.then((snapshot) => {
-            snapshot.ref.getDownloadURL().then((url) => {
-              this.props.firebase.user(authUser.user.uid).set({
-                name,
-                email,
-                file: url,
-                startDate,
-                endDate,
-                startTime,
-                endTime,
-                facultyLink,
-                nussuLink,
-                venue,
-              });
-
-              // Sync excel data to Firebase realtime database
-              this.syncToFirebase(authUser.user.uid, url).then(
-                (spreadsheetid) => {
-                  this.props.firebase.user(authUser.user.uid).update({
-                    spreadsheetid,
-                  });
-
-                  // Update Computing collection with admin details
-                  this.props.firebase.adminDetails().set({
-                    starttime: startTime,
-                    endtime: endTime,
-                    startdate: startDate,
-                    enddate: endDate,
-                    venue,
-                    facultylink: facultyLink,
-                    nussulink: nussuLink,
-                    excelfile: url,
-                  });
-
-                  // Update queueDetails
-                  this.props.firebase.queueDetails().set({
-                    currQueueNum: 0,
-                    currServing: 0,
-                  });
-
-                  // Create ids ref
-                  // this.props.firebase.teleIds().push();
-                }
-              );
-            });
-          });
-        } else {
-          // Create user in the Firebase realtime database
-          this.props.firebase.user(authUser.user.uid).set({
-            name,
-            email,
-          });
-        }
-      })
-      .then(() => {
-        return this.props.firebase.doSendEmailVerification();
-      })
-      .then(() => {
-        // Reset state to intial state and redirect user to Home page
-        this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
-      })
-      .catch((error) => {
-        this.setState({ error });
-      });
-
-    event.preventDefault();
-  };
-
-  syncToFirebase = async (id, url) => {
-    const response = await fetch(`/signup/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ file: url }),
-    });
-    const body = await response.text();
-    return body;
-  };
-
-  onChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  onFileChange = (event) => {
-    this.setState({ file: event.target.files[0] });
-  };
-
-  onDateChange = (date) => {
-    const start = date[0];
-    const end = date[1];
-
-    const formattedStart =
-      start.getDate() +
-      "/" +
-      (start.getMonth() + 1) +
-      "/" +
-      (start.getFullYear() % 100);
-
-    const formattedEnd =
-      end.getDate() +
-      "/" +
-      (end.getMonth() + 1) +
-      "/" +
-      (end.getFullYear() % 100);
-
-    this.setState({
-      dateRange: date,
-      startDate: formattedStart,
-      endDate: formattedEnd,
-    });
-  };
-
-  onTimeChange = (time) => {
-    const start = time[0].split(":").join("");
-    const end = time[1].split(":").join("");
-    this.setState({ timeRange: time, startTime: start, endTime: end });
-  };
-
-  render() {
-    const {
-      name,
-      nusnetId,
-      passwordOne,
-      passwordTwo,
-      venue,
-      nussuLink,
-      facultyLink,
-      dateRange,
-      timeRange,
-      startTime,
-      endTime,
-      error,
-      hasData,
-    } = this.state;
-
-    const invalidId =
-      nusnetId !== ""
-        ? nusnetId.length !== 8 || nusnetId.charAt(0).toUpperCase() !== "E"
-        : false;
-
-    const validId =
-      nusnetId.length === 8 && nusnetId.charAt(0).toUpperCase() === "E";
-
-    const invalidPassword =
-      passwordOne === "" || passwordTwo === ""
-        ? false
-        : validId && name !== "" && passwordOne !== passwordTwo;
-
-    const invalidTime = parseInt(startTime) - parseInt(endTime) >= 0;
-
-    return (
-      <Form onSubmit={this.onSubmit}>
-        <Form.Group controlId="formBasicName" data-test="name-form">
-          <Form.Label>Full Name</Form.Label>
-          <Form.Control
-            name="name"
-            value={name}
-            type="text"
-            placeholder="Enter full name"
-            onChange={this.onChange}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="formEmail" data-test="email-form">
-          <Form.Label>NUS email address</Form.Label>
-          <InputGroup className="email">
-            <Form.Control
-              placeholder="NUSNET ID"
-              name="nusnetId"
-              value={nusnetId}
-              aria-label="NUSNET ID"
-              aria-describedby="basic-addon2"
-              onChange={this.onChange}
-              isInvalid={invalidId}
-              isValid={validId}
-              required
-            />
-            <InputGroup.Append>
-              <InputGroup.Text id="basic-addon2">@u.nus.edu</InputGroup.Text>
-            </InputGroup.Append>
-            <Form.Control.Feedback type="invalid">
-              Invalid ID.
-            </Form.Control.Feedback>
-            <Form.Control.Feedback type="valid">
-              Valid ID.
-            </Form.Control.Feedback>
-          </InputGroup>
-        </Form.Group>
-
-        <Form.Group controlId="formBasicPassword" data-test="password-form">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            name="passwordOne"
-            value={passwordOne}
-            type="password"
-            placeholder="Password"
-            onChange={this.onChange}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group
-          controlId="formConfirmPassword"
-          data-test="confirmpassword-form"
-        >
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            name="passwordTwo"
-            value={passwordTwo}
-            type="password"
-            placeholder="Password"
-            onChange={this.onChange}
-            isInvalid={invalidPassword}
-            required
-          />
-          <Form.Control.Feedback type="invalid">
-            Invalid password. Please ensure both passwords are the same.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        {!hasData && (
-          <React.Fragment>
-            <Form.Group data-test="date-form">
-              <Form.Label>Collection Dates</Form.Label>
-              <Form.Group>
-                <DateRangePicker
-                  onChange={this.onDateChange}
-                  value={dateRange}
-                  required={true}
-                  clearIcon={null}
-                  disabled={hasData}
-                />
-              </Form.Group>
-            </Form.Group>
-
-            <Form.Group data-test="time-form">
-              <Form.Label>Collection Time</Form.Label>
-              <Form.Group>
-                <TimeRangePicker
-                  onChange={this.onTimeChange}
-                  value={timeRange}
-                  format="hh:mm a"
-                  disableClock={true}
-                  maxDetail="minute"
-                  required={true}
-                  clearIcon={null}
-                />
-                <Form.Text>
-                  {invalidTime ? (
-                    timeRange[0] === "00:00" && timeRange[1] === "00:00" ? (
-                      ""
-                    ) : (
-                      <p style={{ color: "red" }}>
-                        Please input a valid time range.
-                      </p>
-                    )
-                  ) : (
-                    <p style={{ color: "green" }}>Great!</p>
-                  )}
-                </Form.Text>
-              </Form.Group>
-            </Form.Group>
-
-            <Form.Group controlId="venue" data-test="venue-form">
-              <Form.Label>Collection Venue</Form.Label>
-              <Form.Control
-                name="venue"
-                value={venue}
-                type="text"
-                placeholder="Enter collection venue"
-                onChange={this.onChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId="facultylink" data-test="facultylink-form">
-              <Form.Label>Faculty Survey Link</Form.Label>
-              <Form.Control
-                name="facultyLink"
-                value={facultyLink}
-                type="text"
-                placeholder="Enter Faculty survey link"
-                onChange={this.onChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId="nussulink" data-test="nussulink-form">
-              <Form.Label>NUSSU Survey Link</Form.Label>
-              <Form.Control
-                name="nussuLink"
-                value={nussuLink}
-                type="text"
-                placeholder="Enter NUSSU survey link"
-                onChange={this.onChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group
-              onChange={this.onFileChange}
-              data-test="uploadfile-form"
-            >
-              <Form.File
-                id="exampleFormControlFile1"
-                label="Upload Excel File"
-                required
-              />
-            </Form.Group>
-          </React.Fragment>
-        )}
-
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={invalidPassword || invalidId || (!hasData && invalidTime)}
-          data-test="submitsignupform-btn"
-        >
-          Sign Up
-        </Button>
-
-        {error && (
-          <Alert variant="danger" style={{ marginTop: "10px" }}>
-            {error.message}
-          </Alert>
-        )}
-      </Form>
-    );
-  }
->>>>>>> 02b27d7cf6e04cd3c6fb69ba21cbeadc01319c36
 }
 
 const SignUpLink = () => (
