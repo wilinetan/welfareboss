@@ -64,11 +64,19 @@ class QueueDetails extends Component {
 		});
 	}
 
+<<<<<<< HEAD
 	render() {
 		const { loading, currServing, currQueueNum, left } = this.state;
 		return (
 			<div className="dashboard">
 				{loading && <div>Loading ...</div>}
+=======
+  render() {
+    const { loading, currServing, currQueueNum, left } = this.state;
+    return (
+      <div className="dashboard" data-test="dashboard">
+        {loading && <div>Loading ...</div>}
+>>>>>>> 02b27d7cf6e04cd3c6fb69ba21cbeadc01319c36
 
 				<Dashboard
 					loading={loading}
@@ -82,6 +90,7 @@ class QueueDetails extends Component {
 }
 
 const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
+<<<<<<< HEAD
 	<div className="text-center">
 		<MDBContainer>
 			<MDBCardGroup>
@@ -106,6 +115,36 @@ const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
 			</MDBCardGroup>
 		</MDBContainer>
 	</div>
+=======
+  <div className="text-center">
+    <MDBContainer>
+      <MDBCardGroup>
+        <MDBCard>
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Current Serving Queue Number</MDBCardTitle>
+            <MDBCardText tag="h2">{currServing}</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+        <MDBCard>
+          <MDBCardBody data-test="currQueueNum-card">
+            <MDBCardTitle tag="h5" data-test="currQueueNum-cardtitle">
+              Last Issued Queue Number
+            </MDBCardTitle>
+            <MDBCardText tag="h2" data-test="dashboard-currQueueNum">
+              {currQueueNum}
+            </MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+        <MDBCard>
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Number of people in Queue</MDBCardTitle>
+            <MDBCardText tag="h2">{left}</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+      </MDBCardGroup>
+    </MDBContainer>
+  </div>
+>>>>>>> 02b27d7cf6e04cd3c6fb69ba21cbeadc01319c36
 );
 
 const QueueInfo = withFirebase(QueueDetails);

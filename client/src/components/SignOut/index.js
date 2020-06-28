@@ -21,6 +21,7 @@ class SignOutButton extends Component {
       <Button
         variant="outline-light"
         onClick={() => this.handleClick(firebase, history)}
+        data-test="signout-btn"
       >
         Sign Out
       </Button>
