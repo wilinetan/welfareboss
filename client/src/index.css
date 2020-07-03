@@ -13,24 +13,13 @@ code {
     "Courier New", monospace;
 }
 
-.nav {
-
-  background: rgba(0, 0, 0);
-  padding: 2px;
-  text-align: right;
-  height: 100px;
-  display: flex;
-  justify-content: space-between;
-  vertical-align: bottom;
-}
-
 .links {
   display: inline-block;
   padding: 2px;
   text-align: right;
   color: pink;
-  vertical-align:bottom;
-  font-size: '18px';
+  vertical-align: bottom;
+  font-size: "18px";
 }
 
 .links li {
@@ -46,4 +35,18 @@ code {
 
 .MDBCardText {
   font-size: 100px;
+}
+
+.nav > .nav-item > a[class*="nav-link"] {
+  color: black;
+}
+
+.nav > .nav-item > a[class*="active"] {
+  /* background-color: black; */
+  border: 2px;
+  border-radius: 20px;
+  border-color: palevioletred;
+  border-style: solid;
+  /* text-decoration: underline; */
+  color: black;
 }
