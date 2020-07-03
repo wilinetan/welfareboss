@@ -34,6 +34,8 @@ describe("Queue List", () => {
       currQueueNum: 0,
       currServing: 0,
     });
+    // Log out
+    cy.logout();
   });
 
   describe("User with no queue number yet", () => {

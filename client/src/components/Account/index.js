@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { compose } from "recompose";
+import { Link } from "react-router-dom";
+
+import * as ROUTES from "../../constants/routes";
 
 import {
   AuthUserContext,
@@ -7,45 +10,12 @@ import {
   withEmailVerification,
 } from "../Session";
 import { withFirebase } from "../Firebase";
-import PasswordChangeForm from "../PasswordChange";
+
+import Button from "react-bootstrap/Button";
 
 const AccountPage = () => (
   <AuthUserContext.Consumer>
-    {(authUser) => (
-      <div
-        className="container"
-        style={{
-          border: "solid",
-          fontFamily: "system-ui",
-          marginBottom: "50px",
-        }}
-      >
-        <h2
-          style={{
-            marginTop: "20px",
-            borderBottom: "solid",
-            marginBottom: "30px",
-          }}
-        >
-          My Account
-        </h2>
-        <div className="row" style={{ marginBottom: "20px", fontSize: "18px" }}>
-          <div className="col-4">Name: {authUser.displayName}</div>
-          <div className="col-4">Email: {authUser.email}</div>
-        </div>
-        <div className="row" style={{ marginBottom: "20px", fontSize: "18px" }}>
-          <div className="col">
-            <AccountInfo authUser={authUser} />
-          </div>
-        </div>
-        <div
-          className="row"
-          style={{ marginBottom: "20px", fontSize: "18px", marginLeft: "3px" }}
-        >
-          <PasswordChangeForm />
-        </div>
-      </div>
-    )}
+    {(authUser) => <AccountInfo authUser={authUser} />}
   </AuthUserContext.Consumer>
 );
 
@@ -89,10 +59,52 @@ class AccountDetails extends Component {
   render() {
     const { loading, ...rest } = this.state;
 
+    const { displayName, email } = this.props.authUser;
+
     return (
-      <div>
-        {loading && <div>Loading ...</div>}
-        <DbInfo rest={rest} />
+      <div
+        className="container"
+        style={{
+          border: "solid",
+          fontFamily: "system-ui",
+          marginBottom: "50px",
+        }}
+      >
+        <div className="row" style={{ fontSize: "18px" }}>
+          <div className="col-6">
+            <h2
+              style={{
+                marginTop: "20px",
+              }}
+            >
+              My Account
+            </h2>
+          </div>
+          <div className="col-6">
+            <Link to={ROUTES.EDIT_ACCOUNT} style={{ float: "right" }}>
+              <Button
+                variant="dark"
+                type="button"
+                style={{ marginTop: "22px" }}
+              >
+                Edit Account
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        <hr style={{ border: "2px solid black" }} />
+
+        <div className="row" style={{ marginBottom: "20px", fontSize: "18px" }}>
+          <div className="col-4">Name: {displayName}</div>
+          <div className="col-4">NUS Email Address: {email}</div>
+        </div>
+        <div className="row" style={{ marginBottom: "20px", fontSize: "18px" }}>
+          <div className="col">
+            {loading && <div>Loading ...</div>}
+            <DbInfo rest={rest} />
+          </div>
+        </div>
       </div>
     );
   }

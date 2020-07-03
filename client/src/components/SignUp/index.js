@@ -48,9 +48,9 @@ class SignUpFormBase extends Component {
   componentDidMount() {
     this.props.firebase.root().once("value", (snapshot) => {
       const hasData = snapshot.hasChild("Computing");
-      this.setState({
-        hasData,
-      });
+      // this.setState({
+      //   hasData,
+      // });
     });
   }
 
@@ -118,6 +118,7 @@ class SignUpFormBase extends Component {
                     facultylink: facultyLink,
                     nussulink: nussuLink,
                     excelfile: url,
+                    spreadsheetid,
                   });
 
                   // Update queueDetails
@@ -203,6 +204,9 @@ class SignUpFormBase extends Component {
   onTimeChange = (time) => {
     const start = time[0].split(":").join("");
     const end = time[1].split(":").join("");
+    console.log("time", time);
+    console.log("start", start);
+    console.log("end", end);
     this.setState({ timeRange: time, startTime: start, endTime: end });
   };
 
@@ -234,7 +238,21 @@ class SignUpFormBase extends Component {
     const invalidPassword =
       passwordOne === "" || passwordTwo === ""
         ? false
-        : validId && name !== "" && passwordOne !== passwordTwo;
+        : passwordOne !== passwordTwo;
+    // validId && name !== "" &&
+
+    const invalidUrl = (url) => {
+      if (
+        url === "" ||
+        url.includes("http:") ||
+        url.includes("https:") ||
+        url.includes("www")
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    };
 
     const invalidTime = parseInt(startTime) - parseInt(endTime) >= 0;
 
@@ -373,7 +391,11 @@ class SignUpFormBase extends Component {
                 placeholder="Enter Faculty survey link"
                 onChange={this.onChange}
                 required
+                isInvalid={invalidUrl(facultyLink)}
               />
+              <Form.Control.Feedback type="invalid">
+                The link is not a valid url.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="nussulink" data-test="nussulink-form">
@@ -385,7 +407,11 @@ class SignUpFormBase extends Component {
                 placeholder="Enter NUSSU survey link"
                 onChange={this.onChange}
                 required
+                isInvalid={invalidUrl(nussuLink)}
               />
+              <Form.Control.Feedback type="invalid">
+                The link is not a valid url.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group
@@ -404,7 +430,13 @@ class SignUpFormBase extends Component {
         <Button
           variant="primary"
           type="submit"
-          disabled={invalidPassword || invalidId || (!hasData && invalidTime)}
+          disabled={
+            invalidPassword ||
+            invalidId ||
+            (!hasData && invalidTime) ||
+            invalidUrl(facultyLink) ||
+            invalidUrl(nussuLink)
+          }
           data-test="submitsignupform-btn"
         >
           Sign Up

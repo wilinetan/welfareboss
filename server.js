@@ -131,9 +131,11 @@ function getAccessToken(oAuth2Client, callback) {
     output: process.stdout,
   });
   rl.question("Enter the code from that page here: ", (code) => {
+    console.log("here");
     rl.close();
     oAuth2Client.getToken(code, (err, token) => {
       if (err) return console.error("Error retrieving access token", err);
+      console.log("setting credentials");
       oAuth2Client.setCredentials(token);
       // Store the token to disk for later program executions
       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {

@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 const INITIAL_STATE = {
   passwordOne: "",
@@ -42,10 +44,17 @@ class PasswordChangeForm extends Component {
     const isInvalid = passwordOne !== passwordTwo || passwordOne === "";
 
     return (
-      <Form onSubmit={this.onSubmit}>
-        <Form.Label>Password Reset Form</Form.Label>
-        <Form.Row>
-          <Form.Group controlId="passwordOne" style={{ marginRight: "3px" }}>
+      <Form
+        onSubmit={this.onSubmit}
+        style={{
+          overflow: "hidden",
+        }}
+      >
+        <Form.Group as={Row} controlId="passwordOne">
+          <Form.Label column sm={3}>
+            New Password
+          </Form.Label>
+          <Col sm={9}>
             <Form.Control
               required
               name="passwordOne"
@@ -53,12 +62,16 @@ class PasswordChangeForm extends Component {
               type="password"
               placeholder="New Password"
               onChange={this.onChange}
+              style={{ width: "500px" }}
             />
-          </Form.Group>
-          <Form.Group
-            controlId="passwordTwo"
-            style={{ marginRight: "3px", marginLeft: "3px" }}
-          >
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="passwordTwo">
+          <Form.Label column sm={3}>
+            Confirm New Password
+          </Form.Label>
+          <Col sm={9}>
             <Form.Control
               required
               name="passwordTwo"
@@ -66,18 +79,19 @@ class PasswordChangeForm extends Component {
               type="password"
               placeholder="Confirm New Password"
               onChange={this.onChange}
+              style={{ width: "500px" }}
             />
-          </Form.Group>
+          </Col>
+        </Form.Group>
 
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={isInvalid}
-            style={{ height: "39px", marginLeft: "3px" }}
-          >
-            Reset My Password
-          </Button>
-        </Form.Row>
+        <Button
+          variant="dark"
+          type="submit"
+          disabled={isInvalid}
+          style={{ marginBottom: "10px", float: "right" }}
+        >
+          Reset My Password
+        </Button>
 
         {error && <p>{error.message}</p>}
       </Form>
