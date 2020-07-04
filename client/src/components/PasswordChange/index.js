@@ -1,6 +1,11 @@
 import React, { Component } from "react";
+import { compose } from "recompose";
 
 import { withFirebase } from "../Firebase";
+import { withRouter } from "react-router-dom";
+
+import * as ROUTES from "../../constants/routes";
+
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -26,6 +31,7 @@ class PasswordChangeForm extends Component {
       .doPasswordUpdate(passwordOne)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
+        this.props.history.push(ROUTES.ACCOUNT);
       })
       .catch((error) => {
         this.setState({ error });
@@ -62,7 +68,7 @@ class PasswordChangeForm extends Component {
               type="password"
               placeholder="New Password"
               onChange={this.onChange}
-              style={{ width: "500px" }}
+              style={{ width: "550px" }}
             />
           </Col>
         </Form.Group>
@@ -79,7 +85,7 @@ class PasswordChangeForm extends Component {
               type="password"
               placeholder="Confirm New Password"
               onChange={this.onChange}
-              style={{ width: "500px" }}
+              style={{ width: "550px" }}
             />
           </Col>
         </Form.Group>
@@ -99,4 +105,4 @@ class PasswordChangeForm extends Component {
   }
 }
 
-export default withFirebase(PasswordChangeForm);
+export default compose(withFirebase, withRouter)(PasswordChangeForm);

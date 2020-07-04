@@ -27,6 +27,7 @@ const scopes = [
 
 const TOKEN_PATH = "token.json";
 
+// Post request to upload excel file to google drive and sync data to firebase
 app.post("/signup/:id", (req, res) => {
   // Authorization
   fs.readFile("credentials.json", (err, content) => {
@@ -46,6 +47,71 @@ app.post("/signup/:id", (req, res) => {
         auth: auth,
         resource: {
           function: "excelToSheets",
+          parameters: [fileurl],
+        },
+        scriptId: scriptId,
+      },
+      function (err, resp) {
+        if (err) {
+          // The API encountered a problem before the script started executing.
+          console.log("The API returned an error: " + err);
+          return res.status(404).send();
+        }
+        if (resp.error) {
+          // The API executed, but the script returned an error.
+
+          // Extract the first (and only) set of error details. The values of this
+          // object are the script's 'errorMessage' and 'errorType', and an array
+          // of stack trace elements.
+          const error = resp.error.details[0];
+          console.log("Script error message: " + error.errorMessage);
+          console.log("Script error stacktrace:");
+
+          if (error.scriptStackTraceElements) {
+            // There may not be a stacktrace if the script didn't start executing.
+            for (let i = 0; i < error.scriptStackTraceElements.length; i++) {
+              const trace = error.scriptStackTraceElements[i];
+              console.log("\t%s: %s", trace.function, trace.lineNumber);
+            }
+          }
+          return res.status(404).send();
+        } else {
+          if (resp.data.error) {
+            console.log(
+              "error details",
+              JSON.stringify(resp.data.error.details)
+            );
+            res.status(404).send();
+          } else {
+            const excelId = resp.data.response.result;
+            res.status(200).send(excelId);
+          }
+        }
+      }
+    );
+  }
+});
+
+// Post request to update firebase with new excel file
+app.post("/edit-account/:id", (req, res) => {
+  // Authorization
+  fs.readFile("credentials.json", (err, content) => {
+    if (err) return console.log("Error loading client secret file:", err);
+    // Authorize a client with credentials, then call the Google Apps Script API.
+    authorize(JSON.parse(content), callAppsScript);
+  });
+
+  function callAppsScript(auth) {
+    const scriptId = process.env.APPS_SCRIPT_ID;
+    const script = google.script("v1");
+    const fileurl = req.body.file;
+
+    // Make the API request. The request object is included here as 'resource'.
+    script.scripts.run(
+      {
+        auth: auth,
+        resource: {
+          function: "updateFirebase",
           parameters: [fileurl],
         },
         scriptId: scriptId,
