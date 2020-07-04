@@ -10,6 +10,7 @@ import * as ROUTES from "../../constants/routes";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import Alert from "react-bootstrap/Alert";
 
 const SignInPage = () => (
   <div
@@ -92,7 +93,11 @@ class SignInFormBase extends Component {
           Sign In
         </Button>
 
-        {error && <p>{error.message}</p>}
+        {error && (
+          <Alert variant="danger" style={{ marginTop: "10px" }}>
+            {error.message}
+          </Alert>
+        )}
       </Form>
     );
   }

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Landing = () => (
+const LandingPage = () => (
   <div>
     <Landing1 />
     <br clear="all" />
@@ -27,10 +27,10 @@ const Landing1 = () => (
           margin: "50px",
           fontSize: "20px",
           fontFamily: "Bookman",
-          marginTop:'40px'
+          marginTop: "40px",
         }}
       >
-        <p style={{ textDecoration: "underline", fontSize:'25px' }}>
+        <p style={{ textDecoration: "underline", fontSize: "25px" }}>
           Why did we start this project?{" "}
         </p>
         <p>
@@ -71,7 +71,7 @@ const Landing2 = () => (
         float: "left",
         height: "200px",
         margin: "5px",
-        textAlign: "right"
+        textAlign: "right",
       }}
     >
       <img
@@ -96,10 +96,12 @@ const Landing2 = () => (
           margin: "0px",
           fontSize: "20px",
           fontFamily: "Bookman",
-          marginTop:'10px'
+          marginTop: "10px",
         }}
       >
-        <p style={{ textDecoration: "underline",fontSize:'25px'}}>Our Services </p>
+        <p style={{ textDecoration: "underline", fontSize: "25px" }}>
+          Our Services{" "}
+        </p>
         <ul>
           <li>
             Receive students' matriculation card number and picture proof of
@@ -128,10 +130,12 @@ const Landing3 = () => (
           margin: "20px",
           fontSize: "20px",
           fontFamily: "Bookman",
-          marginTop:'50px'
+          marginTop: "50px",
         }}
       >
-        <p style={{ textDecoration: "underline", fontSize:'25px' }}>Contact Us on Telegram</p>
+        <p style={{ textDecoration: "underline", fontSize: "25px" }}>
+          Contact Us on Telegram
+        </p>
         <p style={{ fontStyle: "italic" }}>Lim Jia Yi: @jiayi_i </p>
         <p style={{ fontStyle: "italic" }}>Wiline Tan: @wiline </p>
       </h2>
@@ -150,4 +154,4 @@ const Landing3 = () => (
   </div>
 );
 
-export default Landing;
+export default LandingPage;

@@ -1,8 +1,16 @@
 import React, { Component } from "react";
+import { compose } from "recompose";
 
 import { withFirebase } from "../Firebase";
+import { withRouter } from "react-router-dom";
+
+import * as ROUTES from "../../constants/routes";
+
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 const INITIAL_STATE = {
   passwordOne: "",
@@ -24,6 +32,7 @@ class PasswordChangeForm extends Component {
       .doPasswordUpdate(passwordOne)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
+        this.props.history.push(ROUTES.ACCOUNT);
       })
       .catch((error) => {
         this.setState({ error });
@@ -42,10 +51,17 @@ class PasswordChangeForm extends Component {
     const isInvalid = passwordOne !== passwordTwo || passwordOne === "";
 
     return (
-      <Form onSubmit={this.onSubmit}>
-        <Form.Label>Password Reset Form</Form.Label>
-        <Form.Row>
-          <Form.Group controlId="passwordOne" style={{ marginRight: "3px" }}>
+      <Form
+        onSubmit={this.onSubmit}
+        style={{
+          overflow: "hidden",
+        }}
+      >
+        <Form.Group as={Row} controlId="passwordOne">
+          <Form.Label column sm={3}>
+            New Password
+          </Form.Label>
+          <Col sm={9}>
             <Form.Control
               required
               name="passwordOne"
@@ -53,12 +69,16 @@ class PasswordChangeForm extends Component {
               type="password"
               placeholder="New Password"
               onChange={this.onChange}
+              style={{ width: "550px" }}
             />
-          </Form.Group>
-          <Form.Group
-            controlId="passwordTwo"
-            style={{ marginRight: "3px", marginLeft: "3px" }}
-          >
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="passwordTwo">
+          <Form.Label column sm={3}>
+            Confirm New Password
+          </Form.Label>
+          <Col sm={9}>
             <Form.Control
               required
               name="passwordTwo"
@@ -66,23 +86,28 @@ class PasswordChangeForm extends Component {
               type="password"
               placeholder="Confirm New Password"
               onChange={this.onChange}
+              style={{ width: "550px" }}
             />
-          </Form.Group>
+          </Col>
+        </Form.Group>
 
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={isInvalid}
-            style={{ height: "39px", marginLeft: "3px" }}
-          >
-            Reset My Password
-          </Button>
-        </Form.Row>
+        <Button
+          variant="dark"
+          type="submit"
+          disabled={isInvalid}
+          style={{ marginBottom: "10px", float: "right" }}
+        >
+          Reset My Password
+        </Button>
 
-        {error && <p>{error.message}</p>}
+        {error && (
+          <Alert variant="danger" style={{ marginTop: "10px" }}>
+            {error.message}
+          </Alert>
+        )}
       </Form>
     );
   }
 }
 
-export default withFirebase(PasswordChangeForm);
+export default compose(withFirebase, withRouter)(PasswordChangeForm);

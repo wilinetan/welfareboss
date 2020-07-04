@@ -6,14 +6,14 @@ import * as ROUTES from "../../constants/routes";
 import { AuthUserContext } from "../Session";
 
 const Navigation = () => (
-  <div className="nav">
+  <div className="nav" style={navbarStyle}>
     <img
       alt=""
       src="https://lh3.googleusercontent.com/WAj_qKdZbj8R5iPHhL03ygIZkVAVo2n7Y6-hALAyIWhtof7vr6kdEGL3wi3tWQA2pdCq_-5zFdZ1NjvBjnEjdEodAYGz0TfmmbrUMMuaipRvd33oQm6bl_3zVyBjy4ghw0E_InZIsA=w2400"
       width="230px"
       height="80px"
       style={{ marginLeft: "8px", marginTop: "8px" }}
-    ></img>
+    />
     <AuthUserContext.Consumer>
       {(authUser) =>
         authUser && authUser.emailVerified ? (
@@ -70,9 +70,19 @@ const NavigationNonAuth = () => (
 );
 
 const linkStyle = {
-  fontFamily: "Bookman bold",
+  // fontFamily: "Bookman bold",
   color: "rgba(253, 153, 153)",
   fontSize: "18px",
+};
+
+const navbarStyle = {
+  background: "rgba(0, 0, 0)",
+  padding: "2px",
+  textAlign: "right",
+  height: "100px",
+  display: "flex",
+  justifyContent: "space-between",
+  verticalAlign: "bottom",
 };
 
 export default Navigation;
