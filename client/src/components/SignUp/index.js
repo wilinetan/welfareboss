@@ -48,9 +48,9 @@ class SignUpFormBase extends Component {
   componentDidMount() {
     this.props.firebase.root().once("value", (snapshot) => {
       const hasData = snapshot.hasChild("Computing");
-      // this.setState({
-      //   hasData,
-      // });
+      this.setState({
+        hasData,
+      });
     });
   }
 
@@ -88,33 +88,23 @@ class SignUpFormBase extends Component {
           // Create user in the Firebase realtime database
           uploadFile.then((snapshot) => {
             snapshot.ref.getDownloadURL().then((url) => {
-              // this.props.firebase.user(authUser.user.uid).set({
-              //   name,
-              //   email,
-              //   file: url,
-              //   startDate,
-              //   endDate,
-              //   startTime,
-              //   endTime,
-              //   facultyLink,
-              //   nussuLink,
-              //   venue,
-              // });
+              this.props.firebase.user(authUser.user.uid).set({
+                name,
+                email,
+                file: url,
+                startDate,
+                endDate,
+                startTime,
+                endTime,
+                facultyLink,
+                nussuLink,
+                venue,
+              });
 
               // Sync excel data to Firebase realtime database
               this.syncToFirebase(authUser.user.uid, url).then(
                 (spreadsheetid) => {
-                  this.props.firebase.user(authUser.user.uid).set({
-                    name,
-                    email,
-                    file: url,
-                    startDate,
-                    endDate,
-                    startTime,
-                    endTime,
-                    facultyLink,
-                    nussuLink,
-                    venue,
+                  this.props.firebase.user(authUser.user.uid).update({
                     spreadsheetid,
                   });
 
