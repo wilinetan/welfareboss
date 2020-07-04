@@ -438,6 +438,12 @@ class EditAccount extends Component {
                 >
                   Save Changes
                 </Button>
+
+                {error && (
+                  <Alert variant="danger" style={{ marginTop: "10px" }}>
+                    {error.message}
+                  </Alert>
+                )}
               </Form>
             </Tab.Pane>
 
@@ -453,12 +459,6 @@ class EditAccount extends Component {
             </Tab.Pane>
           </Tab.Content>
         </Tab.Container>
-
-        {error && (
-          <Alert variant="danger" style={{ marginTop: "10px" }}>
-            {error.message}
-          </Alert>
-        )}
       </div>
     );
   }

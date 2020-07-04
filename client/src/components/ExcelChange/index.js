@@ -8,6 +8,7 @@ import * as ROUTES from "../../constants/routes";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
@@ -130,7 +131,11 @@ class ExcelChange extends Component {
           Change Excel File
         </Button>
 
-        {error && <p>{error.message}</p>}
+        {error && (
+          <Alert variant="danger" style={{ marginTop: "10px" }}>
+            {error.message}
+          </Alert>
+        )}
       </Form>
     );
   }
