@@ -88,23 +88,33 @@ class SignUpFormBase extends Component {
           // Create user in the Firebase realtime database
           uploadFile.then((snapshot) => {
             snapshot.ref.getDownloadURL().then((url) => {
-              this.props.firebase.user(authUser.user.uid).set({
-                name,
-                email,
-                file: url,
-                startDate,
-                endDate,
-                startTime,
-                endTime,
-                facultyLink,
-                nussuLink,
-                venue,
-              });
+              // this.props.firebase.user(authUser.user.uid).set({
+              //   name,
+              //   email,
+              //   file: url,
+              //   startDate,
+              //   endDate,
+              //   startTime,
+              //   endTime,
+              //   facultyLink,
+              //   nussuLink,
+              //   venue,
+              // });
 
               // Sync excel data to Firebase realtime database
               this.syncToFirebase(authUser.user.uid, url).then(
                 (spreadsheetid) => {
-                  this.props.firebase.user(authUser.user.uid).update({
+                  this.props.firebase.user(authUser.user.uid).set({
+                    name,
+                    email,
+                    file: url,
+                    startDate,
+                    endDate,
+                    startTime,
+                    endTime,
+                    facultyLink,
+                    nussuLink,
+                    venue,
                     spreadsheetid,
                   });
 
@@ -126,9 +136,6 @@ class SignUpFormBase extends Component {
                     currQueueNum: 0,
                     currServing: 0,
                   });
-
-                  // Create ids ref
-                  // this.props.firebase.teleIds().push();
                 }
               );
             });

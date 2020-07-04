@@ -12,6 +12,7 @@ import { withFirebase } from "../Firebase";
 
 import * as ROUTES from "../../constants/routes";
 import PasswordChangeForm from "../PasswordChange";
+import ExcelChange from "../ExcelChange";
 
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -20,7 +21,6 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 
@@ -189,8 +189,6 @@ class EditAccount extends Component {
   render() {
     const {
       excelFile,
-      startDate,
-      endDate,
       dateRange,
       startTime,
       endTime,
@@ -228,17 +226,20 @@ class EditAccount extends Component {
         }}
       >
         <Tab.Container id="edit-account-tab" defaultActiveKey="first">
-          <div class="row" style={{ marginTop: "20px" }}>
-            <div class="col-md-4">
+          <div className="row" style={{ marginTop: "20px" }}>
+            <div className="col-md-4">
               <h2 style={{ lineHeight: "1.5" }}>Edit Account Details</h2>
             </div>
-            <div class="col-md-8">
+            <div className="col-md-8">
               <Nav>
                 <Nav.Item>
                   <Nav.Link eventKey="first">Collections details</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="second">Change Password</Nav.Link>
+                  <Nav.Link eventKey="second">Change Excel File</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="third">Change Password</Nav.Link>
                 </Nav.Item>
               </Nav>
             </div>
@@ -439,7 +440,15 @@ class EditAccount extends Component {
                 </Button>
               </Form>
             </Tab.Pane>
+
             <Tab.Pane eventKey="second">
+              <ExcelChange
+                excelFile={excelFile}
+                authUser={this.props.authUser}
+              />
+            </Tab.Pane>
+
+            <Tab.Pane eventKey="third">
               <PasswordChangeForm />
             </Tab.Pane>
           </Tab.Content>
