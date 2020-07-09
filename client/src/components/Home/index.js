@@ -16,26 +16,77 @@ import {
 import { compose } from "recompose";
 import { withFirebase } from "../Firebase";
 import QueueList from "../QueueList";
+import { PieChart } from "react-minimal-pie-chart";
 
 const HomePage = () => {
 	return (
 		<div className="queueinfo">
 			<QueueInfo />
-			<QueueList />
+			<QueueList />;
+			<ColInfo />;
 		</div>
 	);
 };
 
-// const HomePage = () => (
-//   <AuthUserContext.Consumer>
-//     {(authUser) => (
-//       <div>
-//         <h1>Queue Details</h1>
-//         <QueueInfo />
-//       </div>
-//     )}
-//   </AuthUserContext.Consumer>
-// );
+class ColDetails extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			loading: false,
+			collected: 0,
+			totalppl: 0,
+		};
+	}
+
+	componentDidMount() {
+		this.setState({ loading: true });
+
+		this.props.firebase.colDetails().on("value", (snapshot) => {
+			var collect = snapshot.val();
+
+			this.props.firebase.matDetails().on("value", (snapshot) => {
+				var total = snapshot.numChildren();
+
+				this.setState({
+					loading: false,
+					collected: collect,
+					totalppl: total,
+				});
+			});
+		});
+	}
+
+	render() {
+		const { loading, collected, totalppl } = this.state;
+		return (
+			<div>
+				{loading && <div>Loading ...</div>}
+
+				<Pie loading={loading} collected={collected} totalppl={totalppl} />
+			</div>
+		);
+	}
+}
+
+const Pie = ({ loading, collected, totalppl }) => (
+	<div className="text-center">
+		<PieChart
+			data={[
+				{ title: "Collected", value: collected, color: "#E38627" },
+				{
+					title: "Not collected",
+					value: totalppl - collected,
+					color: "#C13C37",
+				},
+			]}
+			radius={10}
+			label={({ dataEntry }) => dataEntry.title + ", " + dataEntry.value}
+			labelStyle={{ fontSize: 1.5 }}
+			center={[15, 15]}
+		/>
+	</div>
+);
 
 class QueueDetails extends Component {
 	constructor(props) {
@@ -113,6 +164,7 @@ const Dashboard = ({ loading, currServing, currQueueNum, left }) => (
 );
 
 const QueueInfo = withFirebase(QueueDetails);
+const ColInfo = withFirebase(ColDetails);
 
 const condition = (authUser) => !!authUser;
 

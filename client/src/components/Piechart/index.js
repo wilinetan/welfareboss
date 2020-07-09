@@ -1,3 +1,13 @@
+// feature piechart: total collected
+
+// count number of collected = x
+// number not collected = total - x
+
+// feature table: number per hour
+// store collection by hour
+// count by hour
+// construct table
+
 // import React, { Component } from "react";
 // import Plot from "react-plotly.js";
 // // import CanvasJS from "canvasjs";
