@@ -14,7 +14,12 @@ import Alert from "react-bootstrap/Alert";
 
 const SignInPage = () => (
   <div
-    style={{ textAlign: "center", paddingLeft: "500px", paddingRight: "500px" }}
+    style={{
+      textAlign: "center",
+      marginLeft: "auto",
+      marginRight: "auto",
+      width: "500px",
+    }}
   >
     <h1>Sign In</h1>
     <SignInForm />

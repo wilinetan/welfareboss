@@ -13,7 +13,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 
 const SignUpPage = () => (
-  <div style={{ paddingLeft: "80px", paddingRight: "80px", height: "100%" }}>
+  <div style={{ height: "100%", paddingLeft: "80px", paddingRight: "80px" }}>
     <h1>Sign Up</h1>
     <SignUpForm />
   </div>
@@ -125,6 +125,7 @@ class SignUpFormBase extends Component {
                   this.props.firebase.queueDetails().set({
                     currQueueNum: 0,
                     currServing: 0,
+                    startCollection: false,
                   });
                 }
               );
