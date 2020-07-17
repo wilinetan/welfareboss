@@ -89,6 +89,8 @@ class Firebase {
 
   // *** Telebot Database API ***
 
+  computing = () => this.db.ref("Computing");
+
   teleIds = () => this.db.ref("Computing/ids");
 
   teleUser = (teleid) => this.db.ref(`Computing/ids/${teleid}`);

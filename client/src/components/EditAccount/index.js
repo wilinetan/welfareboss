@@ -233,7 +233,7 @@ class EditAccount extends Component {
             <div className="col-md-8">
               <Nav>
                 <Nav.Item>
-                  <Nav.Link eventKey="first">Collections details</Nav.Link>
+                  <Nav.Link eventKey="first">Collection details</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="second">Change Excel File</Nav.Link>
