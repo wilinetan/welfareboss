@@ -18,7 +18,7 @@ import Button from "react-bootstrap/Button";
 const HomePage = () => {
   return (
     <div className="homepage" id="homepage">
-      <QueueInfo />
+      <QueueInfo />s
     </div>
   );
 };
