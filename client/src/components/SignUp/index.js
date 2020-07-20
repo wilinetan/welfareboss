@@ -20,22 +20,22 @@ const SignUpPage = () => (
 );
 
 const INITIAL_STATE = {
-	name: "",
-	nusnetId: "",
-	passwordOne: "",
-	passwordTwo: "",
-	venue: "",
-	facultyLink: "",
-	nussuLink: "",
-	dateRange: null,
-	startDate: "",
-	endDate: "",
-	timeRange: ["00:00", "00:00"],
-	startTime: "00:00",
-	endTime: "00:00",
-	file: null,
-	error: null,
-	hasData: false,
+  name: "",
+  nusnetId: "",
+  passwordOne: "",
+  passwordTwo: "",
+  venue: "",
+  facultyLink: "",
+  nussuLink: "",
+  dateRange: [new Date(), new Date()],
+  startDate: "",
+  endDate: "",
+  timeRange: ["00:00", "00:00"],
+  startTime: "00:00",
+  endTime: "00:00",
+  file: null,
+  error: null,
+  hasData: false,
 };
 
 class SignUpFormBase extends Component {
@@ -62,6 +62,7 @@ class SignUpFormBase extends Component {
       file,
       startTime,
       endTime,
+      dateRange,
       startDate,
       endDate,
       facultyLink,
@@ -131,6 +132,30 @@ class SignUpFormBase extends Component {
               );
             });
           });
+
+          // Create collection database in firebase
+          const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+          const firstDate = dateRange[0];
+          const secondDate = dateRange[1];
+
+          const diffDays = Math.round(
+            Math.abs((firstDate - secondDate) / oneDay)
+          );
+
+          const starttime = parseInt(startTime, 10);
+          const endtime = parseInt(endTime, 10);
+
+          for (var date = 1; date <= diffDays; date++) {
+            for (var hour = starttime; hour <= endtime; hour += 100) {
+              this.props.firebase
+                .colByDateTime()
+                .child(date.toString())
+                .update({
+                  [hour]: 0,
+                  total: 0,
+                });
+            }
+          }
         } else {
           // Create user in the Firebase realtime database
           this.props.firebase.user(authUser.user.uid).set({
@@ -451,9 +476,9 @@ class SignUpFormBase extends Component {
 }
 
 const SignUpLink = () => (
-	<p>
-		Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-	</p>
+  <p>
+    Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+  </p>
 );
 
 const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase);
