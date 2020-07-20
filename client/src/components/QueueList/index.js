@@ -142,6 +142,7 @@ class QueueList extends Component {
           currServing: Math.max(details.queueNum, this.props.currServing),
         })
         .then(() => {
+          // Update next student with time if student currently does not have time
           this.props.firebase
             .teleIds()
             .orderByChild("queueNum")
@@ -149,7 +150,6 @@ class QueueList extends Component {
             .once("child_added", (snapshot) => {
               const teleid = snapshot.val().teleid;
 
-              // Update user with time if user currently does not have time
               if (!snapshot.time) {
                 this.props.firebase.teleUser(teleid).update({
                   time: Date.now(),
@@ -158,6 +158,18 @@ class QueueList extends Component {
             });
         });
     });
+
+    // Update number of students collected
+    this.props.firebase
+      .computing()
+      .child("collected")
+      .once("value", (snapshot) => {
+        const collected = snapshot.val();
+
+        this.props.firebase.computing().update({
+          collected: collected + 1,
+        });
+      });
 
     // Update the state to reflect new changes
     this.props.firebase.teleIds().once("value", (snapshot) => {
