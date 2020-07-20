@@ -26,15 +26,11 @@ class ExcelChange extends Component {
     const { uid } = this.props.authUser;
     const { newFile } = this.state;
 
-    console.log("hello1");
-
     // Upload file to Firebase storage
     var uploadFile = this.props.firebase
       .userStorage(uid)
       .child(newFile.name)
       .put(newFile);
-
-    console.log("hello2");
 
     // Update user data in Firebase realtime database
     uploadFile
