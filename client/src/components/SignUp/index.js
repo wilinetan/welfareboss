@@ -20,22 +20,22 @@ const SignUpPage = () => (
 );
 
 const INITIAL_STATE = {
-  name: "",
-  nusnetId: "",
-  passwordOne: "",
-  passwordTwo: "",
-  venue: "",
-  facultyLink: "",
-  nussuLink: "",
-  dateRange: null,
-  startDate: "",
-  endDate: "",
-  timeRange: ["00:00", "00:00"],
-  startTime: "00:00",
-  endTime: "00:00",
-  file: null,
-  error: null,
-  hasData: false,
+	name: "",
+	nusnetId: "",
+	passwordOne: "",
+	passwordTwo: "",
+	venue: "",
+	facultyLink: "",
+	nussuLink: "",
+	dateRange: null,
+	startDate: "",
+	endDate: "",
+	timeRange: ["00:00", "00:00"],
+	startTime: "00:00",
+	endTime: "00:00",
+	file: null,
+	error: null,
+	hasData: false,
 };
 
 class SignUpFormBase extends Component {
@@ -451,9 +451,9 @@ class SignUpFormBase extends Component {
 }
 
 const SignUpLink = () => (
-  <p>
-    Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-  </p>
+	<p>
+		Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+	</p>
 );
 
 const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase);
