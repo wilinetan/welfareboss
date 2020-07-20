@@ -6,12 +6,12 @@ import { withFirebase } from "../Firebase";
 import QueueList from "../QueueList";
 
 import {
-  MDBCard,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardGroup,
-  MDBContainer,
+	MDBCard,
+	MDBCardBody,
+	MDBCardTitle,
+	MDBCardText,
+	MDBCardGroup,
+	MDBContainer,
 } from "mdbreact";
 import Button from "react-bootstrap/Button";
 
@@ -24,8 +24,8 @@ const HomePage = () => {
 };
 
 class QueueDetails extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
     this.state = {
       loading: false,
@@ -39,8 +39,8 @@ class QueueDetails extends Component {
   componentDidMount = () => {
     this.setState({ loading: true });
 
-    this.props.firebase.queueDetails().on("value", (snapshot) => {
-      var details = snapshot.val();
+		this.props.firebase.queueDetails().on("value", (snapshot) => {
+			var details = snapshot.val();
 
       this.setState({
         loading: false,
@@ -152,6 +152,6 @@ const QueueInfo = withFirebase(QueueDetails);
 const condition = (authUser) => !!authUser;
 
 export default compose(
-  withEmailVerification,
-  withAuthorization(condition)
+	withEmailVerification,
+	withAuthorization(condition)
 )(HomePage);
