@@ -38,6 +38,11 @@ const NavigationAuth = () => (
         Home
       </Link>
     </li>
+    <li data-test="statisticspage-btn">
+      <Link style={linkStyle} to={ROUTES.STATISTICS}>
+        Statistics
+      </Link>
+    </li>
     <li data-test="accountpage-btn">
       <Link style={linkStyle} to={ROUTES.ACCOUNT}>
         Account

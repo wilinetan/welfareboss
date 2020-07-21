@@ -160,16 +160,48 @@ class QueueList extends Component {
     });
 
     // Update number of students collected
-    this.props.firebase
-      .computing()
-      .child("collected")
-      .once("value", (snapshot) => {
-        const collected = snapshot.val();
+    this.props.firebase.colDetails().once("value", (snapshot) => {
+      const total = snapshot.val().total;
 
-        this.props.firebase.computing().update({
-          collected: collected + 1,
-        });
+      // Update total number of students collected
+      this.props.firebase.colDetails().update({
+        total: total + 1,
       });
+
+      // Update number of students collected for that day and hour and the total for that day
+      this.props.firebase.adminDetails().once("value", (snapshot) => {
+        const startDateArr = snapshot.val().startdate.split("/");
+        const startDate = new Date(
+          parseInt(startDateArr[2]) + 2000,
+          parseInt(startDateArr[1]),
+          parseInt(startDateArr[0])
+        );
+
+        const currDate = new Date();
+        const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+
+        const dayNumber = Math.round(Math.abs((currDate - startDate) / oneDay));
+        const hour = currDate.getHours() * 100;
+
+        this.props.firebase
+          .colByDateTime()
+          .child(dayNumber.toString())
+          .once("value", (snapshot) => {
+            console.log("snapshot val", snapshot.val());
+            console.log(
+              "child snapshot",
+              snapshot.child(hour.toString()).val()
+            );
+            this.props.firebase
+              .colByDateTime()
+              .child(dayNumber.toString())
+              .update({
+                [hour]: snapshot.child(hour.toString()).val() + 1,
+                total: snapshot.val().total + 1,
+              });
+          });
+      });
+    });
 
     // Update the state to reflect new changes
     this.props.firebase.teleIds().once("value", (snapshot) => {
@@ -181,11 +213,22 @@ class QueueList extends Component {
 
       const sortedLists = sortStudents(studentsList);
 
-      this.setState({
-        students: sortedLists[0],
-        missed: sortedLists[1],
-        loading: false,
-      });
+      this.setState(
+        {
+          students: sortedLists[0],
+          missed: sortedLists[1],
+          loading: false,
+        },
+        () => {
+          // Update number of people left in the queue after taking into account those who missed thier turn
+          this.props.updateLeft(
+            Math.min(
+              this.props.left,
+              this.state.students.filter((student) => !student.collected).length
+            )
+          );
+        }
+      );
     });
   };
 
