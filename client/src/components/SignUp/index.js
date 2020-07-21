@@ -138,18 +138,17 @@ class SignUpFormBase extends Component {
           const firstDate = dateRange[0];
           const secondDate = dateRange[1];
 
-          const diffDays = Math.round(
-            Math.abs((firstDate - secondDate) / oneDay)
-          );
+          const diffDays =
+            Math.round(Math.abs((firstDate - secondDate) / oneDay)) + 1;
 
           const starttime = parseInt(startTime, 10);
           const endtime = parseInt(endTime, 10);
 
-          for (var date = 1; date <= diffDays; date++) {
-            for (var hour = starttime; hour <= endtime; hour += 100) {
+          for (var day = 1; day <= diffDays; day++) {
+            for (var hour = starttime; hour < endtime; hour += 100) {
               this.props.firebase
                 .colByDateTime()
-                .child(date.toString())
+                .child(day.toString())
                 .update({
                   [hour]: 0,
                   total: 0,

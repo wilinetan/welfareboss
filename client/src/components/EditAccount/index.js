@@ -58,6 +58,14 @@ class EditAccount extends Component {
     this.props.firebase.adminDetails().once("value", (snapshot) => {
       var details = snapshot.val();
 
+      const startTime = details.starttime;
+      const startTimeEdited = startTime.slice(0, 2) + ":" + startTime.slice(2);
+
+      const endTime = details.endtime;
+      const endTimeEdited = endTime.slice(0, 2) + ":" + endTime.slice(2);
+
+      const timeRange = [startTimeEdited, endTimeEdited];
+
       const startDate = details.startdate;
       const startDateArr = startDate.split("/");
       const startDateObject = new Date(
@@ -75,14 +83,6 @@ class EditAccount extends Component {
       );
 
       const dateRange = [startDateObject, endDateObject];
-
-      const startTime = details.starttime;
-      const startTimeEdited = startTime.slice(0, 2) + ":" + startTime.slice(2);
-
-      const endTime = details.endtime;
-      const endTimeEdited = endTime.slice(0, 2) + ":" + endTime.slice(2);
-
-      const timeRange = [startTimeEdited, endTimeEdited];
 
       this.setState({
         loading: false,
@@ -107,6 +107,7 @@ class EditAccount extends Component {
       name,
       startTime,
       endTime,
+      dateRange,
       startDate,
       endDate,
       facultyLink,
@@ -139,6 +140,30 @@ class EditAccount extends Component {
           facultylink: facultyLink,
           nussulink: nussuLink,
         });
+      })
+      .then(() => {
+        // Update collection database in firebase
+        const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        const firstDate = dateRange[0];
+        const secondDate = dateRange[1];
+
+        const diffDays =
+          Math.round(Math.abs((firstDate - secondDate) / oneDay)) + 1;
+
+        const starttime = parseInt(startTime, 10);
+        const endtime = parseInt(endTime, 10);
+
+        for (var day = 1; day <= diffDays; day++) {
+          for (var hour = starttime; hour < endtime; hour += 100) {
+            this.props.firebase
+              .colByDateTime()
+              .child(day.toString())
+              .update({
+                [hour]: 0,
+                total: 0,
+              });
+          }
+        }
       })
       .then(() => {
         this.props.history.push(ROUTES.ACCOUNT);
@@ -184,6 +209,25 @@ class EditAccount extends Component {
     const end = time[1].split(":").join("");
 
     this.setState({ timeRange: time, startTime: start, endTime: end });
+  };
+
+  disableDateTime = () => {
+    if (this.state.startDate !== "") {
+      const startDate = new Date(this.state.dateRange[0]);
+      const endDate = new Date(this.state.dateRange[1]);
+
+      startDate.setHours(parseInt(this.state.startTime.slice(0, 2), 10));
+      endDate.setHours(parseInt(this.state.endTime.slice(0, 2), 10));
+
+      const currDate = new Date();
+
+      if (currDate < startDate || currDate > endDate) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    return true;
   };
 
   render() {
@@ -313,6 +357,7 @@ class EditAccount extends Component {
                           value={dateRange}
                           required={true}
                           clearIcon={null}
+                          disabled={this.disableDateTime()}
                         />
                       </Col>
                     </Form.Group>
@@ -337,6 +382,7 @@ class EditAccount extends Component {
                           maxDetail="minute"
                           required={true}
                           clearIcon={null}
+                          disabled={this.disableDateTime()}
                         />
                         <Form.Text>
                           {invalidTime && (
