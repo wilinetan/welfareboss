@@ -18,38 +18,22 @@ class ColDetails extends Component {
 	componentDidMount() {
 		this.setState({ loading: true });
 
-		this.props.firebase.db.ref("Computing/matric").once("value", (snapshot) => {
+		this.props.firebase.matDetails().once("value", (snapshot) => {
 			var total = snapshot.numChildren();
 			this.setState({
 				totalppl: total,
 			});
 		});
 
-		this.props.firebase.db
-			.ref("Computing/collected")
-			.on("value", (snapshot) => {
-				var collected = snapshot.val();
-				console.log("collected in mount", collected);
+		this.props.firebase.colDetails().on("value", (snapshot) => {
+			var collected = snapshot.val().total;
+			console.log("collected in mount", collected);
 
-				this.setState({
-					loading: false,
-					collected: collected,
-				});
+			this.setState({
+				loading: false,
+				collected: collected,
 			});
-
-		// this.props.firebase.colDetails().on("value", (snapshot) => {
-		// 	var collect = snapshot.val();
-
-		// 	this.props.firebase.matDetails().on("value", (snapshot) => {
-		// 		var total = snapshot.numChildren();
-
-		// 		this.setState({
-		// 			loading: false,
-		// 			collected: collect,
-		// 			totalppl: total,
-		// 		});
-		// 	});
-		// });
+		});
 	}
 
 	render() {

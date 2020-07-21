@@ -89,9 +89,9 @@ class Firebase {
 
 	// *** Telebot Database API ***
 
-  computing = () => this.db.ref("Computing");
+	computing = () => this.db.ref("Computing");
 
-  teleIds = () => this.db.ref("Computing/ids");
+	teleIds = () => this.db.ref("Computing/ids");
 
 	teleUser = (teleid) => this.db.ref(`Computing/ids/${teleid}`);
 
@@ -102,6 +102,8 @@ class Firebase {
 	colDetails = () => this.db.ref("Computing/collected");
 
 	matDetails = () => this.db.ref("Computing/matric");
+
+	colByDateTime = () => this.db.ref("Computing/collected/bydatetime");
 }
 
 export default Firebase;
