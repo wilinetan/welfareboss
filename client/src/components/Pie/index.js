@@ -66,15 +66,14 @@ class ColDetails extends Component {
 
         <PieChart
           data={data}
-          radius={10}
+          radius={25}
           labelPosition={112}
           label={({ dataEntry }) => dataEntry.title + ", " + dataEntry.value}
           labelStyle={(index) => ({
             fill: data[index].color,
-            fontSize: "1.5px",
+            fontSize: "4px",
             fontFamily: "sans-serif",
           })}
-          center={[15, 15]}
         />
       </div>
     );
