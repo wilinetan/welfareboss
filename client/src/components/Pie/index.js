@@ -53,7 +53,7 @@ class ColDetails extends Component {
   render() {
     const { loading, collected, totalppl } = this.state;
     return (
-      <div>
+      <div className="piechart">
         {loading && <div>Loading ...</div>}
 
         <PieChart

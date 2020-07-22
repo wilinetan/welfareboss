@@ -43,7 +43,7 @@ class TableDetails extends Component {
     const { loading, dates, hours } = this.state;
 
     return (
-      <div>
+      <div className="tablestats">
         {loading && <div>Loading ...</div>}
         <TableContent dates={dates} hours={hours} />
       </div>
