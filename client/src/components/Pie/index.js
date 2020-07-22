@@ -52,22 +52,28 @@ class ColDetails extends Component {
 
   render() {
     const { loading, collected, totalppl } = this.state;
+    const data = [
+      { title: "Collected", value: collected, color: "#E38627" },
+      {
+        title: "Not collected",
+        value: totalppl - collected,
+        color: "#C13C37",
+      },
+    ];
     return (
       <div className="piechart">
         {loading && <div>Loading ...</div>}
 
         <PieChart
-          data={[
-            { title: "Collected", value: collected, color: "#E38627" },
-            {
-              title: "Not collected",
-              value: totalppl - collected,
-              color: "#C13C37",
-            },
-          ]}
+          data={data}
           radius={10}
+          labelPosition={112}
           label={({ dataEntry }) => dataEntry.title + ", " + dataEntry.value}
-          labelStyle={{ fontSize: 1.5 }}
+          labelStyle={(index) => ({
+            fill: data[index].color,
+            fontSize: "1.5px",
+            fontFamily: "sans-serif",
+          })}
           center={[15, 15]}
         />
       </div>
