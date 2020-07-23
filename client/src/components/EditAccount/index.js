@@ -153,6 +153,8 @@ class EditAccount extends Component {
         const starttime = parseInt(startTime, 10);
         const endtime = parseInt(endTime, 10);
 
+        this.props.firebase.colByDateTime().remove();
+
         for (var day = 1; day <= diffDays; day++) {
           for (var hour = starttime; hour < endtime; hour += 100) {
             this.props.firebase
@@ -216,7 +218,7 @@ class EditAccount extends Component {
       const startDate = new Date(this.state.dateRange[0]);
       const endDate = new Date(this.state.dateRange[1]);
 
-      startDate.setHours(parseInt(this.state.startTime.slice(0, 2), 10));
+      startDate.setHours(parseInt(this.state.startTime.slice(0, 2), 10) - 1);
       endDate.setHours(parseInt(this.state.endTime.slice(0, 2), 10));
 
       const currDate = new Date();

@@ -38,15 +38,16 @@ class ExcelChange extends Component {
         snapshot.ref.getDownloadURL().then((url) => {
           // Sync excel data to Firebase realtime database
           this.syncToFirebase(uid, url).then((spreadsheetid) => {
+            console.log("spreadsheetid", spreadsheetid);
             this.props.firebase.user(uid).update({
               file: url,
-              spreadsheetid,
+              spreadsheetid: spreadsheetid,
             });
 
             // Update Computing collection with admin details
             this.props.firebase.adminDetails().update({
               excelfile: url,
-              spreadsheetid,
+              spreadsheetid: spreadsheetid,
             });
           });
         });
@@ -71,6 +72,7 @@ class ExcelChange extends Component {
       body: JSON.stringify({ file: url }),
     });
     const body = await response.text();
+    console.log("body", body);
     return body;
   };
 
