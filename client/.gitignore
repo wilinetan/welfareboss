@@ -30,3 +30,6 @@ serviceAccount.json
 
 #Cypress env file
 cypress.json
+
+#Heroku ignore
+.slugignore

@@ -36,8 +36,18 @@ app.get("*", (req, res) => {
 app.post("/signup/:id", (req, res) => {
   const fileurl = req.body.file;
   try {
-    const excelId = new AppsScript(fileurl).runAppsScript();
-    res.send(excelId);
+    var appsscript = new AppsScript(fileurl);
+
+    var callAppsScript = async () => {
+      var excelId = await appsscript.runAppsScript();
+      return excelId;
+    };
+
+    callAppsScript()
+      .then((excelId) => {
+        res.send(excelId);
+      })
+      .catch((err) => res.status(404).send("Error"));
   } catch (err) {
     res.status(400).send("Error");
   }
@@ -46,17 +56,23 @@ app.post("/signup/:id", (req, res) => {
 // Post request to update firebase with new excel file
 app.post("/edit-account/:id", (req, res) => {
   const fileurl = req.body.file;
-  console.log("reqfile", fileurl);
   try {
-    const excelId = new AppsScript(fileurl).runAppsScript();
-    res.send(excelId);
+    var appsscript = new AppsScript(fileurl);
+
+    var callAppsScript = async () => {
+      var excelId = await appsscript.runAppsScript();
+      return excelId;
+    };
+
+    callAppsScript()
+      .then((excelId) => {
+        res.send(excelId);
+      })
+      .catch((err) => res.status(404).send("Error"));
   } catch (err) {
     res.status(404).send("Error");
   }
 });
-
-// console.log that your server is up and running
-// app.listen(port, () => console.log(`Listening on port ${port}`));
 
 //start server
 app.listen(port, (req, res) => {
