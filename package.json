@@ -4,6 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"client": "cd client && npm start",
 		"server": "nodemon server.js",
@@ -18,11 +20,12 @@
 	"bugs": {
 		"url": "https://github.com/wilinetan/welfareboss/issues"
 	},
-	"homepage": "https://github.com/wilinetan/welfareboss#readme",
+	"homepage": "https://welfareboss.com",
 	"dependencies": {
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"googleapis": "^52.1.0",
+		"heroku": "^7.42.5",
 		"in": "^0.18.2",
 		"pivottable": "^2.23.0",
 		"plotly.js": "^1.54.3",
