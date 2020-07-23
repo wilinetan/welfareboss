@@ -32,9 +32,6 @@
     "plotly.js": "^1.54.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-pivottable": "^0.10.0",
-    "react-plotly.js": "^2.4.0",
-    "react-simple-pie-chart": "^0.5.0",
     "root": "^3.2.0"
   },
   "devDependencies": {
