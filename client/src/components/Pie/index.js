@@ -27,7 +27,6 @@ class ColDetails extends Component {
 
     this.props.firebase.colDetails().on("value", (snapshot) => {
       var collected = snapshot.val().total;
-      console.log("collected in mount", collected);
 
       this.setState({
         loading: false,
