@@ -14,8 +14,6 @@ const AppsScript = require("./appsscript.js");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Route setupapp.get('/', (req, res) => {    res.send('root route');})
-
 //Static file declaration
 app.use(express.static(path.join(__dirname, "client/build")));
 
