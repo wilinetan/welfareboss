@@ -58,7 +58,7 @@ app.post("/edit-account/:id", (req, res) => {
     var appsscript = new AppsScript(fileurl);
 
     var callAppsScript = async () => {
-      var excelId = await appsscript.runAppsScript();
+      var excelId = await appsscript.updateFirebase();
       return excelId;
     };
 
