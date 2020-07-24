@@ -77,7 +77,9 @@ class SignUpFormBase extends Component {
       .then((authUser) => {
         // Update user profile
         this.props.firebase.doUpdateProfile(name);
-
+        return authUser;
+      })
+      .then((authUser) => {
         // Ensure that collection details is only set up once
         if (!hasData) {
           // Upload file to Firebase storage
