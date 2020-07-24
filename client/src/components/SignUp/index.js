@@ -75,9 +75,6 @@ class SignUpFormBase extends Component {
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then((authUser) => {
-        // Update user profile
-        this.props.firebase.doUpdateProfile(name);
-
         // Ensure that collection details is only set up once
         if (!hasData) {
           // Upload file to Firebase storage
@@ -168,7 +165,11 @@ class SignUpFormBase extends Component {
         }
       })
       .then(() => {
-        return this.props.firebase.doSendEmailVerification();
+        // Update user profile
+        this.props.firebase.doUpdateProfile(name).then(() => {
+          // Send verification email
+          return this.props.firebase.doSendEmailVerification();
+        });
       })
       .then(() => {
         // Reset state to intial state and redirect user to Home page
