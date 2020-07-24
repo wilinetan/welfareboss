@@ -134,7 +134,7 @@ class SignUpFormBase extends Component {
           });
 
           // Create collection database in firebase
-          this.props.firebase.colByDateTime().set({
+          this.props.firebase.colByDateTime().update({
             total: 0,
           });
 
