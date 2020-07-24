@@ -28,8 +28,8 @@ const StatisticsPage = () => {
 
             <MDBCol md="8">
               <MDBCard>
-                <MDBCardBody data-test="currQueueNum-card">
-                  <MDBCardTitle tag="h5" data-test="currQueueNum-cardtitle">
+                <MDBCardBody>
+                  <MDBCardTitle tag="h5">
                     Table of collected per hour per day
                   </MDBCardTitle>
                   <TableDetails />

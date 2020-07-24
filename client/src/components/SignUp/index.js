@@ -45,14 +45,14 @@ class SignUpFormBase extends Component {
     this.state = { ...INITIAL_STATE };
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.props.firebase.root().once("value", (snapshot) => {
       const hasData = snapshot.hasChild("Computing");
       this.setState({
         hasData,
       });
     });
-  }
+  };
 
   onSubmit = (event) => {
     const {
@@ -134,6 +134,10 @@ class SignUpFormBase extends Component {
           });
 
           // Create collection database in firebase
+          this.props.firebase.colByDateTime().set({
+            total: 0,
+          });
+
           const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
           const firstDate = dateRange[0];
           const secondDate = dateRange[1];
@@ -141,8 +145,8 @@ class SignUpFormBase extends Component {
           const diffDays =
             Math.round(Math.abs((firstDate - secondDate) / oneDay)) + 1;
 
-          const starttime = parseInt(startTime, 10);
-          const endtime = parseInt(endTime, 10);
+          const starttime = parseInt(startTime);
+          const endtime = parseInt(endTime);
 
           for (var day = 1; day <= diffDays; day++) {
             for (var hour = starttime; hour < endtime; hour += 100) {
@@ -226,9 +230,6 @@ class SignUpFormBase extends Component {
   onTimeChange = (time) => {
     const start = time[0].split(":").join("");
     const end = time[1].split(":").join("");
-    console.log("time", time);
-    console.log("start", start);
-    console.log("end", end);
     this.setState({ timeRange: time, startTime: start, endTime: end });
   };
 

@@ -3,7 +3,6 @@ import { withFirebase } from "../Firebase";
 
 import { PieChart } from "react-minimal-pie-chart";
 
-// MUST MAKE COLLECTED +1 WHEN SOMEONE COLLECTS
 class ColDetails extends Component {
   constructor(props) {
     super(props);
@@ -33,20 +32,11 @@ class ColDetails extends Component {
         collected: collected,
       });
     });
+  }
 
-    // this.props.firebase.colDetails().on("value", (snapshot) => {
-    // 	var collect = snapshot.val();
-
-    // 	this.props.firebase.matDetails().on("value", (snapshot) => {
-    // 		var total = snapshot.numChildren();
-
-    // 		this.setState({
-    // 			loading: false,
-    // 			collected: collect,
-    // 			totalppl: total,
-    // 		});
-    // 	});
-    // });
+  componentWillUnmount() {
+    this.props.firebase.colDetails().off();
+    this.props.firebase.matDetails().off();
   }
 
   render() {
@@ -59,13 +49,14 @@ class ColDetails extends Component {
         color: "#C13C37",
       },
     ];
+
     return (
       <div className="piechart">
         {loading && <div>Loading ...</div>}
 
         <PieChart
           data={data}
-          radius={25}
+          radius={18}
           labelPosition={112}
           label={({ dataEntry }) => dataEntry.title + ", " + dataEntry.value}
           labelStyle={(index) => ({

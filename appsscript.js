@@ -34,7 +34,27 @@ class AppsScript {
       expiry_date: process.env.EXPIRY_DATE,
     });
 
-    return await this.callAppsScript(auth, fileurl);
+    return await this.callAppsScript(auth, fileurl, "excelToSheets");
+  }
+
+  async updateFirebase() {
+    const fileurl = this.fileurl;
+
+    const client_secret = process.env.CLIENT_SECRET;
+    const client_id = process.env.CLIENT_ID;
+    const redirect_uri = process.env.REDIRECT_URI;
+
+    const auth = new google.auth.OAuth2(client_id, client_secret, redirect_uri);
+
+    auth.setCredentials({
+      access_token: process.env.ACCESS_TOKEN,
+      refresh_token: process.env.REFRESH_TOKEN,
+      scope: process.env.SCOPE,
+      token_type: process.env.TOKEN_TYPE,
+      expiry_date: process.env.EXPIRY_DATE,
+    });
+
+    return await this.callAppsScript(auth, fileurl, "updateFirebase");
   }
 
   // fs.readFile("credentials.json", (err, content) => {
@@ -42,7 +62,7 @@ class AppsScript {
   //   // Authorize a client with credentials, then call the Google Apps Script API.
   //   this.authorize(JSON.parse(content), callAppsScript);
   // });
-  async callAppsScript(auth, fileurl) {
+  async callAppsScript(auth, fileurl, functionToCall) {
     const scriptId = process.env.APPS_SCRIPT_ID;
     const script = google.script("v1");
 
@@ -50,7 +70,7 @@ class AppsScript {
       const res = await script.scripts.run({
         auth: auth,
         resource: {
-          function: "updateFirebase",
+          function: functionToCall,
           parameters: [fileurl],
         },
         scriptId: scriptId,
