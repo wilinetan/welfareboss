@@ -171,9 +171,6 @@ class SignUpFormBase extends Component {
           return this.props.firebase.doSendEmailVerification();
         });
       })
-      // .then(() => {
-      //   return this.props.firebase.doSendEmailVerification();
-      // })
       .then(() => {
         // Reset state to intial state and redirect user to Home page
         this.setState({ ...INITIAL_STATE });
