@@ -51,6 +51,7 @@ const MissedList = ({ students, checkVerified }) => (
   </div>
 );
 
+// Sort students according to their queue number
 const studentComparator = (student1, student2) =>
   student1.queueNum - student2.queueNum;
 
