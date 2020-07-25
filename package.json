@@ -1,39 +1,44 @@
 {
-	"name": "welfareboss",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"client": "cd client && npm start",
-		"server": "nodemon server.js",
-		"dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/wilinetan/welfareboss.git"
-	},
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/wilinetan/welfareboss/issues"
-	},
-	"homepage": "https://github.com/wilinetan/welfareboss#readme",
-	"dependencies": {
-		"dotenv": "^8.2.0",
-		"express": "^4.17.1",
-		"googleapis": "^52.1.0",
-		"in": "^0.18.2",
-		"pivottable": "^2.23.0",
-		"plotly.js": "^1.54.3",
-		"react": "^16.13.1",
-		"react-dom": "^16.13.1",
-		"react-pivottable": "^0.10.0",
-		"react-plotly.js": "^2.4.0",
-		"react-simple-pie-chart": "^0.5.0",
-		"root": "^3.2.0"
-	},
-	"devDependencies": {
-		"concurrently": "^4.0.1"
-	}
+  "name": "welfareboss",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client-install": "npm install --prefix client",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "cd client && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd client && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wilinetan/welfareboss.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wilinetan/welfareboss/issues"
+  },
+  "homepage": "https://github.com/wilinetan/welfareboss#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "googleapis": "^52.1.0",
+    "pivottable": "^2.23.0",
+    "plotly.js": "^1.54.3",
+    "react-pivottable": "^0.10.0",
+    "react-plotly.js": "^2.4.0",
+    "react-simple-pie-chart": "^0.5.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "root": "^3.2.0"
+  },
+  "devDependencies": {
+    "concurrently": "^4.0.1"
+  },
+  "engines": {
+    "node": "13.x"
+  }
 }

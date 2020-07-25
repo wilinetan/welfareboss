@@ -17,68 +17,122 @@ class AppsScript {
     this.fileurl = fileurl;
   }
 
-  runAppsScript() {
+  async runAppsScript() {
     const fileurl = this.fileurl;
 
-    fs.readFile("credentials.json", (err, content) => {
-      if (err) return console.log("Error loading client secret file:", err);
-      // Authorize a client with credentials, then call the Google Apps Script API.
-      this.authorize(JSON.parse(content), callAppsScript);
+    const client_secret = process.env.CLIENT_SECRET;
+    const client_id = process.env.CLIENT_ID;
+    const redirect_uri = process.env.REDIRECT_URI;
+
+    const auth = new google.auth.OAuth2(client_id, client_secret, redirect_uri);
+
+    auth.setCredentials({
+      access_token: process.env.ACCESS_TOKEN,
+      refresh_token: process.env.REFRESH_TOKEN,
+      scope: process.env.SCOPE,
+      token_type: process.env.TOKEN_TYPE,
+      expiry_date: process.env.EXPIRY_DATE,
     });
 
-    function callAppsScript(auth) {
-      const scriptId = process.env.APPS_SCRIPT_ID;
-      const script = google.script("v1");
+    return await this.callAppsScript(auth, fileurl, "excelToSheets");
+  }
 
-      // Make the API request. The request object is included here as 'resource'.
-      script.scripts.run(
-        {
-          auth: auth,
-          resource: {
-            function: "updateFirebase",
-            parameters: [fileurl],
-          },
-          scriptId: scriptId,
+  async updateFirebase() {
+    const fileurl = this.fileurl;
+
+    const client_secret = process.env.CLIENT_SECRET;
+    const client_id = process.env.CLIENT_ID;
+    const redirect_uri = process.env.REDIRECT_URI;
+
+    const auth = new google.auth.OAuth2(client_id, client_secret, redirect_uri);
+
+    auth.setCredentials({
+      access_token: process.env.ACCESS_TOKEN,
+      refresh_token: process.env.REFRESH_TOKEN,
+      scope: process.env.SCOPE,
+      token_type: process.env.TOKEN_TYPE,
+      expiry_date: process.env.EXPIRY_DATE,
+    });
+
+    return await this.callAppsScript(auth, fileurl, "updateFirebase");
+  }
+
+  // fs.readFile("credentials.json", (err, content) => {
+  //   if (err) return console.log("Error loading client secret file:", err);
+  //   // Authorize a client with credentials, then call the Google Apps Script API.
+  //   this.authorize(JSON.parse(content), callAppsScript);
+  // });
+  async callAppsScript(auth, fileurl, functionToCall) {
+    const scriptId = process.env.APPS_SCRIPT_ID;
+    const script = google.script("v1");
+
+    try {
+      const res = await script.scripts.run({
+        auth: auth,
+        resource: {
+          function: functionToCall,
+          parameters: [fileurl],
         },
-        function (err, resp) {
-          if (err) {
-            // The API encountered a problem before the script started executing.
-            console.log("The API returned an error: " + err);
-            return err;
-          }
-          if (resp.error) {
-            // The API executed, but the script returned an error.
-
-            // Extract the first (and only) set of error details. The values of this
-            // object are the script's 'errorMessage' and 'errorType', and an array
-            // of stack trace elements.
-            const error = resp.error.details[0];
-            console.log("Script error message: " + error.errorMessage);
-            console.log("Script error stacktrace:");
-
-            if (error.scriptStackTraceElements) {
-              // There may not be a stacktrace if the script didn't start executing.
-              for (let i = 0; i < error.scriptStackTraceElements.length; i++) {
-                const trace = error.scriptStackTraceElements[i];
-                console.log("\t%s: %s", trace.function, trace.lineNumber);
-              }
-            }
-            return resp.error.details[0];
-          } else {
-            if (resp.data.error) {
-              console.log(
-                "error details",
-                JSON.stringify(resp.data.error.details)
-              );
-              return err;
-            } else {
-              const excelId = resp.data.response.result;
-              return excelId;
-            }
-          }
-        }
-      );
+        scriptId: scriptId,
+      });
+      return res.data.response.result;
+    } catch (err) {
+      return err;
     }
+
+    // console.log("res", res.data.response);
+    // return res.data.response;
+
+    // Make the API request. The request object is included here as 'resource'.
+    // script.scripts.run(
+    //   {
+    //     auth: auth,
+    //     resource: {
+    //       function: "updateFirebase",
+    //       parameters: [fileurl],
+    //     },
+    //     scriptId: scriptId,
+    //   },
+    //   function (err, resp) {
+    //     if (err) {
+    //       // The API encountered a problem before the script started executing.
+    //       console.log("The API returned an error: " + err);
+    //       return err;
+    //     }
+    //     if (resp.error) {
+    //       // The API executed, but the script returned an error.
+
+    //       // Extract the first (and only) set of error details. The values of this
+    //       // object are the script's 'errorMessage' and 'errorType', and an array
+    //       // of stack trace elements.
+    //       const error = resp.error.details[0];
+    //       console.log("Script error message: " + error.errorMessage);
+    //       console.log("Script error stacktrace:");
+
+    //       if (error.scriptStackTraceElements) {
+    //         // There may not be a stacktrace if the script didn't start executing.
+    //         for (let i = 0; i < error.scriptStackTraceElements.length; i++) {
+    //           const trace = error.scriptStackTraceElements[i];
+    //           console.log("\t%s: %s", trace.function, trace.lineNumber);
+    //         }
+    //       }
+    //       return resp.error.details[0];
+    //     } else {
+    //       if (resp.data.error) {
+    //         console.log(
+    //           "error details",
+    //           JSON.stringify(resp.data.error.details)
+    //         );
+    //         return err;
+    //       } else {
+    //         console.log("response", resp.data);
+    //         const excelId = resp.data.response.result;
+    //         console.log("excelid in appscript", excelId);
+    //         // return excelId;
+    //       }
+    //     }
+    //   }
+    // );
   }
 
   /**
