@@ -69,24 +69,5 @@ class ColDetails extends Component {
     );
   }
 }
-/* <Pie loading={loading} collected={collected} totalppl={totalppl} /> */
-// const Pie = ({ loading, collected, totalppl }) => (
-// 	<div className="text-center">
-// 		<PieChart
-// 			data={[
-// 				{ title: "Collected", value: collected, color: "#E38627" },
-// 				{
-// 					title: "Not collected",
-// 					value: totalppl - collected,
-// 					color: "#C13C37",
-// 				},
-// 			]}
-// 			radius={10}
-// 			label={({ dataEntry }) => dataEntry.title + ", " + dataEntry.value}
-// 			labelStyle={{ fontSize: 1.5 }}
-// 			center={[15, 15]}
-// 		/>
-// 	</div>
-// );
 
 export default withFirebase(ColDetails);
