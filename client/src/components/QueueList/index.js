@@ -4,6 +4,8 @@ import { withFirebase } from "../Firebase";
 import StudentList from "../StudentList";
 import MissedList from "../MissedList";
 
+import Button from "react-bootstrap/Button";
+
 class QueueList extends Component {
   constructor(props) {
     super(props);
@@ -41,11 +43,7 @@ class QueueList extends Component {
         this.props.updateLeft(
           this.props.left === ""
             ? this.state.students.length
-            : Math.min(
-                this.props.left,
-                this.state.students.filter((student) => !student.collected)
-                  .length
-              )
+            : Math.min(this.props.left, this.state.students.length)
         );
       } else {
         this.setState({
@@ -60,7 +58,7 @@ class QueueList extends Component {
     clearInterval(this.interval);
   }
 
-  checkMissed() {
+  checkMissed = () => {
     const currDate = Date.now();
 
     // When collection has not started
@@ -83,7 +81,7 @@ class QueueList extends Component {
       });
     }
 
-    // Check students who currently have a time
+    // Separte students into 2 arrays: one for students with time, one without
     const [withTime, withoutTime] = this.state.students.reduce(
       ([withTime, withoutTime], student) =>
         student.time
@@ -92,6 +90,7 @@ class QueueList extends Component {
       [[], []]
     );
 
+    // Check students who currently have a time
     withTime.forEach((student) => {
       // Remove student from queue if it has been more than 5 minutes
       if (currDate - student.time >= 300000) {
@@ -117,13 +116,12 @@ class QueueList extends Component {
     this.props.updateLeft(
       Math.min(this.props.left, this.state.students.length)
     );
-  }
+  };
 
   // Indicate student has collected welfare pack
   markCollect = (teleid) => {
     this.props.firebase.teleUser(teleid).once("value", (snapshot) => {
       const details = snapshot.val();
-      // const isCollected = details.collected;
 
       // Update student's data as collected or uncollected
       this.props.firebase.teleUser(teleid).update({
@@ -134,7 +132,7 @@ class QueueList extends Component {
       this.props.firebase
         .queueDetails()
         .update({
-          currServing: Math.max(details.queueNum, this.props.currServing),
+          currServing: Math.max(details.queueNum + 1, this.props.currServing),
         })
         .then(() => {
           // Update next student with time if student currently does not have time
@@ -265,26 +263,44 @@ class QueueList extends Component {
     const { students, missed, loading } = this.state;
 
     return (
-      <div
-        className="queuelist-container"
-        style={{ margin: "20px", textAlign: "center" }}
-        data-test="queuelist"
-      >
-        <h1>Queue List</h1>
-        {loading && <div>Loading ...</div>}
+      <React.Fragment>
+        <div className="text-center" style={{ marginTop: "15px" }}>
+          <Button
+            type="submit"
+            onClick={() => {
+              students.length === 0
+                ? this.props.handleStartCollection(0)
+                : this.props.handleStartCollection(students[0].queueNum);
+            }}
+          >
+            {this.props.startCollection
+              ? "Stop Collection"
+              : "Start Collection"}
+          </Button>
+        </div>
+        <div
+          className="queuelist-container"
+          style={{ margin: "20px", textAlign: "center" }}
+          data-test="queuelist"
+        >
+          <h1>Queue List</h1>
+          {loading && <div>Loading ...</div>}
 
-        {students.length === 0 ? (
-          <p style={{ fontSize: "25px" }}>Currently no students in the queue</p>
-        ) : (
-          <StudentList
-            students={students}
-            markCollect={this.markCollect}
-            checkVerified={this.checkVerified}
-            startCollection={this.props.startCollection}
-          />
-        )}
-        <MissedList students={missed} checkVerified={this.checkVerified} />
-      </div>
+          {students.length === 0 ? (
+            <p style={{ fontSize: "25px" }}>
+              Currently no students in the queue
+            </p>
+          ) : (
+            <StudentList
+              students={students}
+              markCollect={this.markCollect}
+              checkVerified={this.checkVerified}
+              startCollection={this.props.startCollection}
+            />
+          )}
+          <MissedList students={missed} checkVerified={this.checkVerified} />
+        </div>
+      </React.Fragment>
     );
   }
 }
