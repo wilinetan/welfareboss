@@ -87,6 +87,8 @@ class Firebase {
 
   usersStorage = () => this.storage.ref("users");
 
+  // *** Database Computing API ***
+
   computing = () => this.db.ref("Computing");
 
   teleIds = () => this.db.ref("Computing/ids");
