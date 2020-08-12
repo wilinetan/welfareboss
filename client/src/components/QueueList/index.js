@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
 
 import StudentList from "../StudentList";
-import MissedList from "../MissedList";
 
 import Button from "react-bootstrap/Button";
 
@@ -13,7 +12,6 @@ class QueueList extends Component {
     this.state = {
       loading: false,
       students: [],
-      missed: [],
     };
   }
 
@@ -29,11 +27,17 @@ class QueueList extends Component {
           ...usersObject[key],
         }));
 
-        const sortedLists = sortStudents(studentsList);
+        /* Get all the students who have a queue number, did not miss their turn and have not collected
+         and sort them according to their queue number */
+        const students = studentsList
+          .filter(
+            (student) =>
+              !student.missed && student.queueNum !== -1 && !student.collected
+          )
+          .sort((student1, student2) => student1.queueNum - student2.queueNum);
 
         this.setState({
-          students: sortedLists[0],
-          missed: sortedLists[1],
+          students: students,
           loading: false,
         });
 
@@ -46,6 +50,7 @@ class QueueList extends Component {
             : Math.min(this.props.left, this.state.students.length)
         );
       } else {
+        // There are no students in the queue
         this.setState({
           loading: false,
         });
@@ -81,7 +86,7 @@ class QueueList extends Component {
       });
     }
 
-    // Separte students into 2 arrays: one for students with time, one without
+    // Separate students into 2 arrays: one for students with time, one without
     const [withTime, withoutTime] = this.state.students.reduce(
       ([withTime, withoutTime], student) =>
         student.time
@@ -94,11 +99,12 @@ class QueueList extends Component {
     withTime.forEach((student) => {
       // Remove student from queue if it has been more than 5 minutes
       if (currDate - student.time >= 300000) {
+        // Update user as missed in firebase
         this.props.firebase.teleUser(student.teleid).update({
           missed: true,
         });
 
-        // Update firebase with the student that missed
+        // Update firebase with this student that missed
         this.props.firebase.computing().update({ missed: student.teleid });
 
         // Set time for next student if he does not have a time and has not collected
@@ -123,7 +129,7 @@ class QueueList extends Component {
     this.props.firebase.teleUser(teleid).once("value", (snapshot) => {
       const details = snapshot.val();
 
-      // Update student's data as collected or uncollected
+      // Update student's data as collected
       this.props.firebase.teleUser(teleid).update({
         collected: true,
       });
@@ -139,7 +145,7 @@ class QueueList extends Component {
           this.props.firebase
             .teleIds()
             .orderByChild("queueNum")
-            .equalTo(this.props.currServing + 1)
+            .equalTo(details.queueNum + 1)
             .once("child_added", (snapshot) => {
               const teleid = snapshot.val().teleid;
 
@@ -210,12 +216,18 @@ class QueueList extends Component {
         ...usersObject[key],
       }));
 
-      const sortedLists = sortStudents(studentsList);
+      /* Get all the students who have a queue number, did not miss their turn and have not collected
+         and sort them according to their queue number */
+      const students = studentsList
+        .filter(
+          (student) =>
+            !student.missed && student.queueNum !== -1 && !student.collected
+        )
+        .sort((student1, student2) => student1.queueNum - student2.queueNum);
 
       this.setState(
         {
-          students: sortedLists[0],
-          missed: sortedLists[1],
+          students: students,
           loading: false,
         },
         () => {
@@ -249,18 +261,24 @@ class QueueList extends Component {
         ...usersObject[key],
       }));
 
-      const sortedLists = sortStudents(studentsList);
+      /* Get all the students who have a queue number, did not miss their turn and have not collected
+         and sort them according to their queue number */
+      const students = studentsList
+        .filter(
+          (student) =>
+            !student.missed && student.queueNum !== -1 && !student.collected
+        )
+        .sort((student1, student2) => student1.queueNum - student2.queueNum);
 
       this.setState({
-        students: sortedLists[0],
-        missed: sortedLists[1],
+        students: students,
         loading: false,
       });
     });
   };
 
   render() {
-    const { students, missed, loading } = this.state;
+    const { students, loading } = this.state;
 
     return (
       <React.Fragment>
@@ -298,32 +316,10 @@ class QueueList extends Component {
               startCollection={this.props.startCollection}
             />
           )}
-          <MissedList students={missed} checkVerified={this.checkVerified} />
         </div>
       </React.Fragment>
     );
   }
 }
-
-// Sort students into those in the queue and those who missed their turn
-const sortStudents = (studentsList) => {
-  const [missedList, queueList] = studentsList.reduce(
-    ([missed, queue], student) =>
-      student.missed
-        ? [[...missed, student], queue]
-        : [missed, [...queue, student]],
-    [[], []]
-  );
-
-  const studentList = queueList
-    .filter((student) => student.queueNum !== -1 && !student.collected)
-    .sort(studentComparator);
-
-  return [studentList, missedList];
-};
-
-// Sort students according to their queue number
-const studentComparator = (student1, student2) =>
-  student1.queueNum - student2.queueNum;
 
 export default withFirebase(QueueList);
