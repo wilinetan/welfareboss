@@ -53,7 +53,6 @@ const StudentList = ({
               id={student.teleid}
               type="checkbox"
               onChange={() => markCollect(student.teleid)}
-              //   checked={student.collected}
               disabled={!startCollection}
             />
           </td>

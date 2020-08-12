@@ -11,6 +11,7 @@ import AccountPage from "../Account";
 import AdminPage from "../Admin";
 import StatisticsPage from "../Statistics";
 import EditAccount from "../EditAccount";
+import MissedPage from "../MissedPage";
 
 import * as ROUTES from "../../constants/routes";
 import { withAuthentication } from "../Session";
@@ -30,6 +31,7 @@ const App = () => (
       <Route path={ROUTES.ADMIN} component={AdminPage} />
       <Route path={ROUTES.EDIT_ACCOUNT} component={EditAccount} />
       <Route path={ROUTES.STATISTICS} component={StatisticsPage} />
+      <Route path={ROUTES.MISSED} component={MissedPage} />
     </div>
   </Router>
 );

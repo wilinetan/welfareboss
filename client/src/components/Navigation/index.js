@@ -38,6 +38,11 @@ const NavigationAuth = () => (
         Home
       </Link>
     </li>
+    <li data-test="missedpage-btn">
+      <Link style={linkStyle} to={ROUTES.MISSED}>
+        Missed
+      </Link>
+    </li>
     <li data-test="statisticspage-btn">
       <Link style={linkStyle} to={ROUTES.STATISTICS}>
         Statistics
