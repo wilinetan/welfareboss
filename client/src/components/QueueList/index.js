@@ -182,7 +182,10 @@ class QueueList extends Component {
         console.log("startDate", startDate);
         console.log("currDate", currDate);
 
-        const dayNumber = Math.round(Math.abs((currDate - startDate) / oneDay));
+        const dayNumber =
+          Math.round(Math.abs((currDate - startDate) / oneDay)) === 0
+            ? 1
+            : Math.round(Math.abs((currDate - startDate) / oneDay));
         const hour = currDate.getHours() * 100;
 
         console.log("dayNumber", dayNumber);
