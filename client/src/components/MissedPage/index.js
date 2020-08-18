@@ -99,7 +99,7 @@ class MissedPage extends Component {
 
         {students.length === 0 ? (
           <p style={{ fontSize: "25px" }}>
-            Currently no students who missed thier turn
+            Currently no students who missed their turn
           </p>
         ) : (
           <MissedList students={students} checkVerified={this.checkVerified} />
