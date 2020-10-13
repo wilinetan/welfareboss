@@ -12,3 +12,6 @@ Technologies used
 * Firebase
 * Google Apps Script API
 * React Bootstrap
+
+<br/>
+A detailed write up on the project is at https://docs.google.com/document/d/1lZ-kb2C3Slm8ENUUW7CZXuyKEHhc5QN13HHD3vHp-Lc/edit
